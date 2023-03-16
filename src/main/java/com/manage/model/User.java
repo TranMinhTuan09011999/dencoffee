@@ -1,9 +1,6 @@
 package com.manage.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -13,10 +10,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,30 +29,26 @@ public class User extends AbstractAuditEntity implements java.io.Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
-  private Long id;
+  @Column(name = "user_id", nullable = false)
+  private Long userId;
 
   @Column(name = "username")
   private String username;
 
-  @Column(name = "password")
-  private String password;
-
-  @Column(name = "fullname")
+  @Column(name = "full_name")
   private String fullname;
 
-  @Column(name = "address")
-  private String address;
-
-  @Column(name = "phone_number", length = 10)
-  private String phone_number;
-
-  @Column(name = "birthday")
-  private Date birthday;
+  @Column(name = "password")
+  private String password;
 
   @Column(name = "status")
   private Integer status;
 
-  @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "user")
-  private List<SystemUser> systemUsers;
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JoinTable(
+          name = "users_roles",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  private List<Role> roles;
 }

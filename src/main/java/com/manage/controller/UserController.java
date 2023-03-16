@@ -27,7 +27,7 @@ public class UserController {
   @JsonView({UserViews.UserViewsSet.class})
   public ResponseEntity<?> getUser(@PathVariable(value = "userId") Long userId) throws SystemException {
     try {
-      UserDTO user = userService.findUserById(userId);
+      UserDTO user = userService.findUserByUserId(userId);
       return new ResponseEntity<>(user, HttpStatus.OK);
     } catch (Exception e) {
       logger.error("Error", e);
