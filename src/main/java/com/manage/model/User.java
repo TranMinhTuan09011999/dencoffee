@@ -13,11 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -35,7 +32,7 @@ public class User extends AbstractAuditEntity implements java.io.Serializable {
   @Column(name = "username")
   private String username;
 
-  @Column(name = "full_name")
+  @Column(name = "fullname")
   private String fullname;
 
   @Column(name = "password")

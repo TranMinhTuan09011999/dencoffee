@@ -38,5 +38,5 @@ public class UserDTO extends AbstractDTO implements java.io.Serializable {
   private Integer status;
 
   @JsonView({UserViews.UserViewsSet.class})
-  Set<RoleDTO> roles = new HashSet<>();
+  private List<RoleDTO> roles;
 }

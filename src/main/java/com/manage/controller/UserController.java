@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,11 +24,12 @@ public class UserController {
   @Autowired
   private UserService userService;
 
-  @GetMapping("/user/{userId}")
+  @GetMapping("/user/{userName}")
   @JsonView({UserViews.UserViewsSet.class})
-  public ResponseEntity<?> getUser(@PathVariable(value = "userId") Long userId) throws SystemException {
+  @PreAuthorize("hasRole('USER')")
+  public ResponseEntity<?> getUser(@PathVariable(value = "userName") String userName) throws SystemException {
     try {
-      UserDTO user = userService.findUserByUserId(userId);
+      UserDTO user = userService.findUserByUserName(userName);
       return new ResponseEntity<>(user, HttpStatus.OK);
     } catch (Exception e) {
       logger.error("Error", e);

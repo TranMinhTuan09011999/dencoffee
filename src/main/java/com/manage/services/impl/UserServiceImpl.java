@@ -19,8 +19,8 @@ public class UserServiceImpl implements UserService {
   private UserMapper userMapper;
 
   @Override
-  public UserDTO findUserByUserId(Long id) {
-    User user = userRepository.findUserByUserId(id);
+  public UserDTO findUserByUserName(String userName) {
+    User user = userRepository.getUserByUsername(userName);
     return userMapper.toDto(user, new CycleAvoidingMappingContext());
   }
 }
