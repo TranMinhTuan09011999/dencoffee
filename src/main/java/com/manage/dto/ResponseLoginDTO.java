@@ -3,11 +3,11 @@ package com.manage.dto;
 import lombok.Data;
 
 @Data
-public class ResponseLoginDTO {
+public class ResponseLoginDTO implements java.io.Serializable  {
 
-  private String jwttoken;
+  private static final long serialVersionUID = 1L;
+
   private Long userId;
   private String username;
   private String fullname;
-
 }

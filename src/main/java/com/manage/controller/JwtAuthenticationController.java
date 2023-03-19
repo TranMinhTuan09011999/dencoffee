@@ -3,10 +3,12 @@ package com.manage.controller;
 import com.manage.configurations.security.JwtTokenUtil;
 import com.manage.configurations.security.JwtUserDetailsService;
 import com.manage.configurations.security.MyUserDetails;
+import com.manage.constant.SessionConstant;
 import com.manage.dto.ResponseLoginDTO;
 import com.manage.dto.JwtRequestDTO;
 import com.manage.model.User;
 import com.manage.services.UserService;
+import com.manage.services.bl.SessionManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,17 +39,21 @@ public class JwtAuthenticationController {
   @Autowired
   private JwtUserDetailsService jwtUserDetailsService;
 
+  @Autowired
+  private SessionManagementService sessionService;
+
   @PostMapping(value = "/login")
   public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequestDTO authenticationRequest) throws Exception {
     try {
       authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
       final MyUserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
       final String token = jwtTokenUtil.generateToken(userDetails);
+      sessionService.setAttribute(SessionConstant.TOKEN, token);
       ResponseLoginDTO responseLoginDTO = new ResponseLoginDTO();
       responseLoginDTO.setUsername(userDetails.getUser().getUsername());
-      responseLoginDTO.setJwttoken(token);
       responseLoginDTO.setUserId(userDetails.getUser().getUserId());
       responseLoginDTO.setFullname(userDetails.getUser().getFullname());
+      sessionService.setAttribute(SessionConstant.USER_INFOR, responseLoginDTO);
       return ResponseEntity.ok(responseLoginDTO);
     } catch (Exception e) {
       logger.error("Error", e);
