@@ -2,6 +2,8 @@ package com.manage.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ResponseLoginDTO implements java.io.Serializable  {
 
@@ -10,4 +12,6 @@ public class ResponseLoginDTO implements java.io.Serializable  {
   private Long userId;
   private String username;
   private String fullname;
+  private String token;
+  private List<String> roles;
 }

@@ -12,11 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.SystemException;
 
 @RestController
+@RequestMapping("/api/user")
 public class UserController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -24,7 +26,7 @@ public class UserController {
   @Autowired
   private UserService userService;
 
-  @GetMapping("/user/{userName}")
+  @GetMapping("/{userName}")
   @JsonView({UserViews.UserViewsSet.class})
   @PreAuthorize("hasRole('USER')")
   public ResponseEntity<?> getUser(@PathVariable(value = "userName") String userName) throws SystemException {

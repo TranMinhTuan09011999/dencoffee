@@ -3,12 +3,9 @@ package com.manage.controller;
 import com.manage.configurations.security.JwtTokenUtil;
 import com.manage.configurations.security.JwtUserDetailsService;
 import com.manage.configurations.security.MyUserDetails;
-import com.manage.constant.SessionConstant;
 import com.manage.dto.ResponseLoginDTO;
 import com.manage.dto.JwtRequestDTO;
 import com.manage.model.User;
-import com.manage.services.UserService;
-import com.manage.services.bl.SessionManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +14,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.SystemException;
+import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api/auth")
 public class JwtAuthenticationController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -39,21 +38,18 @@ public class JwtAuthenticationController {
   @Autowired
   private JwtUserDetailsService jwtUserDetailsService;
 
-  @Autowired
-  private SessionManagementService sessionService;
-
   @PostMapping(value = "/login")
   public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequestDTO authenticationRequest) throws Exception {
     try {
       authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
       final MyUserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
       final String token = jwtTokenUtil.generateToken(userDetails);
-      sessionService.setAttribute(SessionConstant.TOKEN, token);
       ResponseLoginDTO responseLoginDTO = new ResponseLoginDTO();
       responseLoginDTO.setUsername(userDetails.getUser().getUsername());
       responseLoginDTO.setUserId(userDetails.getUser().getUserId());
       responseLoginDTO.setFullname(userDetails.getUser().getFullname());
-      sessionService.setAttribute(SessionConstant.USER_INFOR, responseLoginDTO);
+      responseLoginDTO.setToken(token);
+      responseLoginDTO.setRoles(userDetails.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toList()));
       return ResponseEntity.ok(responseLoginDTO);
     } catch (Exception e) {
       logger.error("Error", e);
