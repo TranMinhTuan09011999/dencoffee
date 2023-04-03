@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manage.jsonview.EmployeeViews;
-import com.manage.jsonview.UserViews;
+import com.manage.model.WorkHistory;
 import com.manage.util.DateHandler;
 import com.manage.util.FormatDateSerializer;
 import lombok.AllArgsConstructor;
@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -47,4 +48,6 @@ public class EmployeeDTO extends AbstractDTO implements java.io.Serializable {
 
   @JsonView({EmployeeViews.EmployeeViewSet.class})
   private Integer status;
+
+  private List<WorkHistory> workHistoryList;
 }

@@ -20,7 +20,7 @@ import javax.transaction.SystemException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee")
+@RequestMapping("/api/admin/employee")
 public class EmployeeController {
 
   @Autowired

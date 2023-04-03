@@ -12,4 +12,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
           + " ORDER BY e.employee_id ASC",
           nativeQuery = true)
   List<Employee> findAllByStatus(@Param("status") Integer status);
+
+  @Query(value = "select max(employee_id) from employee", nativeQuery = true)
+  Long getMaxId();
+
+  Employee findEmployeeByEmployeeId(Long employeeId);
 }
