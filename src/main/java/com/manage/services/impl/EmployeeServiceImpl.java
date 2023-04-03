@@ -22,8 +22,8 @@ public class EmployeeServiceImpl implements EmployeeService {
   private EmployeeMapper employeeMapper;
 
   @Override
-  public List<EmployeeDTO> getAllEmployee() {
-    List<Employee> employeeList = employeeRepository.findAll();
+  public List<EmployeeDTO> getAllEmployeeByStatus(Integer status) {
+    List<Employee> employeeList = employeeRepository.findAllByStatus(status);
     List<EmployeeDTO> employeeDTOList = employeeList.stream().map(e -> employeeMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
     return employeeDTOList;
   }
