@@ -5,6 +5,7 @@ import com.manage.dto.EmployeeDTO;
 import com.manage.jsonview.EmployeeViews;
 import com.manage.services.bl.GetEmployeeInforService;
 import com.manage.services.bl.RegisterEmployeeService;
+import com.manage.services.bl.UpdateEmployeeService;
 import com.manage.services.bl.UpdateStatusForEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,9 @@ public class EmployeeController {
   @Autowired
   private UpdateStatusForEmployeeService updateStatusForEmployeeService;
 
+  @Autowired
+  private UpdateEmployeeService updateEmployeeService;
+
   @GetMapping("/all-employee/{status}")
   @JsonView({EmployeeViews.EmployeeViewSet.class})
   @PreAuthorize("hasRole('ADMIN')")
@@ -53,6 +57,13 @@ public class EmployeeController {
   public ResponseEntity<?> updateStatusForEmployee(@PathVariable(value = "employeeId") Long employeeId,
                                                    @PathVariable(value = "status") Integer status) throws SystemException {
     Boolean result = updateStatusForEmployeeService.updateStatusForEmployee(employeeId, status);
+    return ResponseEntity.status(HttpStatus.OK).body(result);
+  }
+
+  @PostMapping("/update-employee")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> updateStatusForEmployee(@RequestBody EmployeeDTO employeeDTO) throws SystemException {
+    Boolean result = updateEmployeeService.updateEmployeeById(employeeDTO);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 

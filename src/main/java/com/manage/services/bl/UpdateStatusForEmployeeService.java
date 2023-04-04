@@ -28,7 +28,11 @@ public class UpdateStatusForEmployeeService {
   public Boolean updateStatusForEmployee(Long employeeId, Integer status) throws SystemException {
     try {
       updateStatus(employeeId, status);
-      updateWorkHistory(employeeId);
+      if (status == 1) {
+        saveNewWorkHistory(employeeId);
+      } else {
+        updateWorkHistory(employeeId);
+      }
       return true;
     } catch (Exception e) {
       logger.error("Error", e);
@@ -53,6 +57,18 @@ public class UpdateStatusForEmployeeService {
       workHistory.setModifiedBy("Admin");
       workHistoryRepository.save(workHistory);
     }
+  }
+
+  private void saveNewWorkHistory(Long employeeId) {
+    WorkHistory workHistory = new WorkHistory();
+    workHistory.setStartDate(new Date());
+    Employee employeeForWorkHistory = employeeRepository.findEmployeeByEmployeeId(employeeId);
+    workHistory.setEmployee(employeeForWorkHistory);
+    workHistory.setCreatedDate(new Date());
+    workHistory.setCreatedBy("Admin");
+    workHistory.setModifiedDate(new Date());
+    workHistory.setModifiedBy("Admin");
+    workHistoryRepository.save(workHistory);
   }
 
 }
