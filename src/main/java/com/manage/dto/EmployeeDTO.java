@@ -26,10 +26,12 @@ public class EmployeeDTO extends AbstractDTO implements java.io.Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @JsonView({EmployeeViews.EmployeeViewSet.class})
+  @JsonView({EmployeeViews.EmployeeViewSet.class,
+          EmployeeViews.EmployeeNameViewSet.class})
   private Long employeeId;
 
-  @JsonView({EmployeeViews.EmployeeViewSet.class})
+  @JsonView({EmployeeViews.EmployeeViewSet.class,
+          EmployeeViews.EmployeeNameViewSet.class})
   private String fullname;
 
   @JsonView({EmployeeViews.EmployeeViewSet.class})

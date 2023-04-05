@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.manage.dto.EmployeeDTO;
 import com.manage.jsonview.EmployeeViews;
 import com.manage.services.bl.GetEmployeeInforService;
+import com.manage.services.bl.GetEmployeeNameListService;
 import com.manage.services.bl.RegisterEmployeeService;
 import com.manage.services.bl.UpdateEmployeeService;
 import com.manage.services.bl.UpdateStatusForEmployeeService;
@@ -22,7 +23,7 @@ import javax.transaction.SystemException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/employee")
+@RequestMapping("/api")
 public class EmployeeController {
 
   @Autowired
@@ -37,7 +38,10 @@ public class EmployeeController {
   @Autowired
   private UpdateEmployeeService updateEmployeeService;
 
-  @GetMapping("/all-employee/{status}")
+  @Autowired
+  private GetEmployeeNameListService getEmployeeNameListService;
+
+  @GetMapping("/admin/employee/all-employee/{status}")
   @JsonView({EmployeeViews.EmployeeViewSet.class})
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> getAllEmployeeByStatus(@PathVariable(value = "status") Integer status) throws SystemException {
@@ -45,14 +49,14 @@ public class EmployeeController {
     return ResponseEntity.status(HttpStatus.OK).body(customerDTOList);
   }
 
-  @PostMapping("/register-employee")
+  @PostMapping("/admin/employee/register-employee")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> registerEmployee(@RequestBody EmployeeDTO employeeDTO) throws SystemException {
     Boolean result = registerEmployeeService.registerEmployee(employeeDTO);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
-  @PostMapping("/update-status/{employeeId}/{status}")
+  @PostMapping("/admin/employee/update-status/{employeeId}/{status}")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> updateStatusForEmployee(@PathVariable(value = "employeeId") Long employeeId,
                                                    @PathVariable(value = "status") Integer status) throws SystemException {
@@ -60,11 +64,18 @@ public class EmployeeController {
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
-  @PostMapping("/update-employee")
+  @PostMapping("/admin/employee/update-employee")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> updateStatusForEmployee(@RequestBody EmployeeDTO employeeDTO) throws SystemException {
     Boolean result = updateEmployeeService.updateEmployeeById(employeeDTO);
     return ResponseEntity.status(HttpStatus.OK).body(result);
+  }
+
+  @GetMapping("/employee/employee-name/{status}")
+  @JsonView({EmployeeViews.EmployeeNameViewSet.class})
+  public ResponseEntity<?> getAllEmployeeName(@PathVariable(value = "status") Integer status) throws SystemException {
+    List<EmployeeDTO> customerDTOList = getEmployeeNameListService.getEmployeeNameList(status);
+    return ResponseEntity.status(HttpStatus.OK).body(customerDTOList);
   }
 
 }
