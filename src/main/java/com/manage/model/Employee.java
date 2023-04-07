@@ -48,4 +48,7 @@ public class Employee extends AbstractAuditEntity implements java.io.Serializabl
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employee")
   private List<WorkHistory> workHistoryList;
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employee")
+  private List<Attendance> attendanceList;
 }

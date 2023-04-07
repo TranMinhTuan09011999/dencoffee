@@ -1,4 +1,4 @@
-package com.manage.controller;
+package com.manage.controller.admin;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.manage.dto.UserDTO;

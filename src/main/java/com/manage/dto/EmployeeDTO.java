@@ -1,9 +1,9 @@
 package com.manage.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.manage.jsonview.AttendanceViews;
 import com.manage.jsonview.EmployeeViews;
 import com.manage.model.WorkHistory;
 import com.manage.util.DateHandler;
@@ -27,11 +27,13 @@ public class EmployeeDTO extends AbstractDTO implements java.io.Serializable {
   private static final long serialVersionUID = 1L;
 
   @JsonView({EmployeeViews.EmployeeViewSet.class,
-          EmployeeViews.EmployeeNameViewSet.class})
+          EmployeeViews.EmployeeNameViewSet.class,
+          AttendanceViews.AttendanceForTodayViewSet.class})
   private Long employeeId;
 
   @JsonView({EmployeeViews.EmployeeViewSet.class,
-          EmployeeViews.EmployeeNameViewSet.class})
+          EmployeeViews.EmployeeNameViewSet.class,
+          AttendanceViews.AttendanceForTodayViewSet.class})
   private String fullname;
 
   @JsonView({EmployeeViews.EmployeeViewSet.class})
@@ -52,4 +54,6 @@ public class EmployeeDTO extends AbstractDTO implements java.io.Serializable {
   private Integer status;
 
   private List<WorkHistory> workHistoryList;
+
+  private List<EmployeeDTO> employeeDTOList;
 }

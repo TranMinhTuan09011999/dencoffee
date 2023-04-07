@@ -1,4 +1,4 @@
-package com.manage.controller;
+package com.manage.controller.admin;
 
 import com.manage.configurations.security.JwtTokenUtil;
 import com.manage.configurations.security.JwtUserDetailsService;

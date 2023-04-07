@@ -2,7 +2,6 @@ package com.manage.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,22 +18,24 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "work_history")
-public class WorkHistory extends AbstractAuditEntity implements java.io.Serializable {
+@Table(name = "attendance")
+public class Attendance extends AbstractEntity implements java.io.Serializable {
+
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "work_history_id", nullable = false)
-  private Long workHistoryId;
+  @Column(name = "attendance_id", nullable = false)
+  private Long attendanceId;
 
-  @Column(name = "start_date")
-  private Date startDate;
+  @Column(name = "start_date_time")
+  private Date startDateTime;
 
-  @Column(name = "end_date")
-  private Date endDate;
+  @Column(name = "end_date_time")
+  private Date endDateTime;
 
-  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
   @JoinColumn(name = "employee_id", nullable = false)
   private Employee employee;
+
 }
