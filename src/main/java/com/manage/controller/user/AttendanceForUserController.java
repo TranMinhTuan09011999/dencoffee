@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.manage.dto.AttendaceSaveRequestDTO;
 import com.manage.dto.AttendanceDTO;
 import com.manage.dto.AttendanceEndDateTimeUpdateDTO;
+import com.manage.dto.DateRequestDTO;
 import com.manage.jsonview.AttendanceViews;
 import com.manage.services.bl.GetAttendanceService;
 import com.manage.services.bl.SaveAttendanceService;
@@ -11,7 +12,6 @@ import com.manage.services.bl.UpdateAttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,10 +39,10 @@ public class AttendanceForUserController {
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
-  @GetMapping("/get-attendance")
+  @PostMapping("/get-attendance")
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
-  public ResponseEntity<?> getAttendanceForToday() throws SystemException {
-    List<AttendanceDTO> attendanceDTOList = getAttendanceService.getAttendanceForToday();
+  public ResponseEntity<?> getAttendanceForToday(@RequestBody DateRequestDTO dateRequestDTO) throws SystemException {
+    List<AttendanceDTO> attendanceDTOList = getAttendanceService.getAttendanceForToday(dateRequestDTO.getDate());
     return ResponseEntity.status(HttpStatus.OK).body(attendanceDTOList);
   }
 

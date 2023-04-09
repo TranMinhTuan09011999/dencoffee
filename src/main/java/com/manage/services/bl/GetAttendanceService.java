@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,9 +19,9 @@ public class GetAttendanceService {
   @Autowired
   private AttendanceService attendanceService;
 
-  public List<AttendanceDTO> getAttendanceForToday() throws SystemException {
+  public List<AttendanceDTO> getAttendanceForToday(Date date) throws SystemException {
     try {
-        return attendanceService.getAttendanceForToday();
+        return attendanceService.getAttendanceForToday(date);
     } catch (Exception e) {
       logger.error("Error", e);
       throw new SystemException();
