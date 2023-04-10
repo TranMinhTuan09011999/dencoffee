@@ -22,13 +22,12 @@ public class IpAddressController {
 
   @GetMapping("/ip-address-attendance")
   public ResponseEntity<?> getIpAddressForAttedance(HttpServletRequest request) throws SystemException, UnknownHostException {
-    String ipAddress = request.getRemoteAddr();
-    System.out.println(ipAddress);
-    InetAddress localip = InetAddress.getLocalHost();
-    System.out.println(localip);
-    ipAddress = localip.getHostAddress();
-    System.out.println(ipAddress);
-    Boolean result = checkIpAddressService.checkIpAddress(ipAddress);
+    String remoteAddr = request.getRemoteAddr();
+    if (remoteAddr.equals("0:0:0:0:0:0:0:1")) {
+      InetAddress localip = InetAddress.getLocalHost();
+      remoteAddr = localip.getHostAddress();
+    }
+    Boolean result = checkIpAddressService.checkIpAddress(remoteAddr);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 }
