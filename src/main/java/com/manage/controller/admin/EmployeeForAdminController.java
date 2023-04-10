@@ -1,8 +1,12 @@
 package com.manage.controller.admin;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.manage.dto.AttendanceDTO;
+import com.manage.dto.DateRequestDTO;
 import com.manage.dto.EmployeeDTO;
+import com.manage.jsonview.AttendanceViews;
 import com.manage.jsonview.EmployeeViews;
+import com.manage.services.bl.GetAttendanceService;
 import com.manage.services.bl.GetEmployeeInforService;
 import com.manage.services.bl.GetEmployeeNameListService;
 import com.manage.services.bl.RegisterEmployeeService;
@@ -38,6 +42,9 @@ public class EmployeeForAdminController {
   @Autowired
   private UpdateEmployeeService updateEmployeeService;
 
+  @Autowired
+  private GetAttendanceService getAttendanceService;
+
   @GetMapping("/all-employee/{status}")
   @JsonView({EmployeeViews.EmployeeViewSet.class})
   @PreAuthorize("hasRole('ADMIN')")
@@ -68,4 +75,11 @@ public class EmployeeForAdminController {
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
+  @PostMapping("/get-attendance")
+  @PreAuthorize("hasRole('ADMIN')")
+  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
+  public ResponseEntity<?> getAttendanceForToday(@RequestBody DateRequestDTO dateRequestDTO) throws SystemException {
+    List<AttendanceDTO> attendanceDTOList = getAttendanceService.getAttendanceForToday(dateRequestDTO.getDate());
+    return ResponseEntity.status(HttpStatus.OK).body(attendanceDTOList);
+  }
 }
