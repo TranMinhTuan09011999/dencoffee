@@ -16,6 +16,6 @@ public class IpAddressServiceImpl implements IpAddressService {
 
   @Override
   public List<IpAddress> getAllIpAddress() {
-    return ipAddressRepository.findAll();
+    return ipAddressRepository.findAllByStatus();
   }
 }
