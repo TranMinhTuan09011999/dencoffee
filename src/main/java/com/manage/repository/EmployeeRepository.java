@@ -17,4 +17,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
   Long getMaxId();
 
   Employee findEmployeeByEmployeeId(Long employeeId);
+
 }

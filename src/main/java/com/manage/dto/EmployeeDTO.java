@@ -55,5 +55,5 @@ public class EmployeeDTO extends AbstractDTO implements java.io.Serializable {
 
   private List<WorkHistory> workHistoryList;
 
-  private List<EmployeeDTO> employeeDTOList;
+  private List<AttendanceDTO> attendanceDTOList;
 }

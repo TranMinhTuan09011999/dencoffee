@@ -16,4 +16,10 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
           nativeQuery = true)
   List<Attendance> getAttendanceByToday(@Param("today") Date today);
 
+  @Query(value = "SELECT a.* FROM attendance a " +
+          "WHERE a.start_date_time >= :dateFrom AND a.start_date_time <= :dateTo"
+          + " ORDER BY a.attendance_id ASC",
+          nativeQuery = true)
+  List<Attendance> getAttendanceForEmployee(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo);
+
 }

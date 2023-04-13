@@ -25,11 +25,13 @@ public class AttendanceDTO extends AbstractNonAuditDTO implements Serializable {
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
   private Long attendanceId;
 
-  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
+  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class,
+          AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
   @JsonSerialize(using = FormatDateTimeSerializer.class)
   private Date startDateTime;
 
-  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
+  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class,
+          AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
   @JsonSerialize(using = FormatDateTimeSerializer.class)
   private Date endDateTime;
 

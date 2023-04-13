@@ -28,4 +28,11 @@ public class AttendanceServiceImpl implements AttendanceService {
     List<AttendanceDTO> attendanceDTOList = attendanceList.stream().map(e -> attendanceMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
     return attendanceDTOList;
   }
+
+  @Override
+  public List<AttendanceDTO> getAttendanceForEmployee(Date dateFrom, Date dateTo) {
+    List<Attendance> attendanceList = attendanceRepository.getAttendanceForEmployee(dateFrom, dateTo);
+    List<AttendanceDTO> attendanceDTOList = attendanceList.stream().map(e -> attendanceMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
+    return attendanceDTOList;
+  }
 }

@@ -9,4 +9,6 @@ public interface AttendanceService {
 
   List<AttendanceDTO> getAttendanceForToday(Date date);
 
+  List<AttendanceDTO> getAttendanceForEmployee(Date dateFrom, Date dateTo);
+
 }
