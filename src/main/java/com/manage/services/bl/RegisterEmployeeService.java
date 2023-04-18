@@ -2,8 +2,10 @@ package com.manage.services.bl;
 
 import com.manage.dto.EmployeeDTO;
 import com.manage.model.Employee;
+import com.manage.model.PayRoll;
 import com.manage.model.WorkHistory;
 import com.manage.repository.EmployeeRepository;
+import com.manage.repository.PayrollRepository;
 import com.manage.repository.WorkHistoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +26,14 @@ public class RegisterEmployeeService {
   @Autowired
   private WorkHistoryRepository workHistoryRepository;
 
+  @Autowired
+  private PayrollRepository payrollRepository;
+
   public Boolean registerEmployee(EmployeeDTO employeeDTO) throws SystemException {
     try {
       saveEmployee(employeeDTO);
       saveWorkHistory();
+      saveSalary(employeeDTO.getSalary());
       return true;
     } catch (Exception e) {
       logger.error("Error", e);
@@ -61,5 +67,15 @@ public class RegisterEmployeeService {
     workHistory.setModifiedDate(new Date());
     workHistory.setModifiedBy("Admin");
     workHistoryRepository.save(workHistory);
+  }
+
+  private void saveSalary(Double salary) {
+    PayRoll payRoll = new PayRoll();
+    payRoll.setStartDate(new Date());
+    payRoll.setSalary(salary);
+    Long maxId = employeeRepository.getMaxId();
+    Employee employeeForPayroll = employeeRepository.findEmployeeByEmployeeId(maxId);
+    payRoll.setEmployee(employeeForPayroll);
+    payrollRepository.save(payRoll);
   }
 }

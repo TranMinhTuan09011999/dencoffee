@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
   @Query(value = "SELECT e.* FROM employee e WHERE e.status = :status"
-          + " ORDER BY e.employee_id ASC",
+          + " ORDER BY e.employee_id DESC",
           nativeQuery = true)
   List<Employee> findAllByStatus(@Param("status") Integer status);
 

@@ -26,7 +26,7 @@ public class FormatDateTimeSerializer extends StdSerializer<Date> {
   @Override
   public void serialize(Date date, JsonGenerator jsonGenerator,
       SerializerProvider serializerProvider) throws IOException {
-    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     jsonGenerator.writeString(dateFormat.format(date));
   }

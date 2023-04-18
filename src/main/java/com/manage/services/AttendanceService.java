@@ -11,4 +11,6 @@ public interface AttendanceService {
 
   List<AttendanceDTO> getAttendanceForEmployee(Date dateFrom, Date dateTo);
 
+  List<AttendanceDTO> getAttendanceForMonthYear(Integer month, Integer year);
+
 }

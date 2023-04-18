@@ -18,26 +18,26 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "attendance")
-public class Attendance extends AbstractEntity implements java.io.Serializable {
+@Table(name = "payroll")
+public class PayRoll extends AbstractEntity implements java.io.Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "attendance_id", nullable = false)
-  private Long attendanceId;
+  @Column(name = "payroll_id", nullable = false)
+  private Long payrollId;
 
-  @Column(name = "start_date_time")
-  private Date startDateTime;
+  @Column(name = "salary")
+  private Double salary;
 
-  @Column(name = "end_date_time")
-  private Date endDateTime;
+  @Column(name = "start_date")
+  private Date startDate;
 
-  @Column(name = "payroll_status")
-  private Integer payrollStatus;
+  @Column(name = "end_date")
+  private Date endDate;
 
-  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinColumn(name = "employee_id", nullable = false)
   private Employee employee;
 

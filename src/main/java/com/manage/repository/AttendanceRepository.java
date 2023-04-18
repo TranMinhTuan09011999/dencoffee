@@ -22,4 +22,9 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
           nativeQuery = true)
   List<Attendance> getAttendanceForEmployee(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo);
 
+  @Query(value = "SELECT a.* FROM attendance a " +
+          "WHERE MONTH(a.start_date_time) = :month AND YEAR(a.start_date_time) = :year"
+          + " ORDER BY a.attendance_id ASC",
+          nativeQuery = true)
+  List<Attendance> getAttendanceForMonthYear(@Param("month") Integer month, @Param("year") Integer year);
 }

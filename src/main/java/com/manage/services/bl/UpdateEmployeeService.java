@@ -30,14 +30,13 @@ public class UpdateEmployeeService {
   }
 
   private void updateEmployee(EmployeeDTO employeeDTO) {
-    Employee employee = new Employee();
+    Employee employee = employeeRepository.getOne(employeeDTO.getEmployeeId());
     employee.setEmployeeId(employeeDTO.getEmployeeId());
     employee.setFullname(employeeDTO.getFullname());
     employee.setGender(employeeDTO.getGender());
     employee.setBirthday(employeeDTO.getBirthday());
     employee.setPhoneNumber(employeeDTO.getPhoneNumber());
     employee.setAddress(employeeDTO.getAddress());
-    employee.setStatus(employeeDTO.getStatus());
     employee.setModifiedDate(new Date());
     employee.setModifiedBy("Admin");
     employeeRepository.save(employee);

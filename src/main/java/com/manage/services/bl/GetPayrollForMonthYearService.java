@@ -1,8 +1,7 @@
 package com.manage.services.bl;
 
-import com.manage.dto.EmployeeDTO;
+import com.manage.dto.AttendanceDetailsForEmployeeDTO;
 import com.manage.model.PayRoll;
-import com.manage.services.EmployeeService;
 import com.manage.services.PayrollService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,30 +13,28 @@ import java.text.SimpleDateFormat;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Service
-public class GetEmployeeInforService {
+public class GetPayrollForMonthYearService {
 
-  private static final Logger logger = LoggerFactory.getLogger(GetEmployeeInforService.class);
+  private static final Logger logger = LoggerFactory.getLogger(GetPayrollForMonthYearService.class);
 
   @Autowired
-  private EmployeeService employeeService;
+  private GetAttendanceForEmployeeService getAttendanceForEmployeeService;
 
   @Autowired
   private PayrollService payrollService;
 
-  public List<EmployeeDTO> getEmployeeInforByStatus(Integer status) throws SystemException {
+  public List<AttendanceDetailsForEmployeeDTO> GetPayrollForMonthYear(Integer month, Integer year) throws SystemException {
     try {
-      List<EmployeeDTO> employeeDTOList = employeeService.getAllEmployeeByStatus(status);
-      employeeDTOList.forEach(item -> {
+      List<AttendanceDetailsForEmployeeDTO> attendanceDetailsForEmployeeDTOList =
+              getAttendanceForEmployeeService.getAttendanceForMonthYear(month, year);
+      attendanceDetailsForEmployeeDTOList.forEach(item -> {
         List<PayRoll> payRollList = payrollService.getPayrollByEmployee(item.getEmployeeId());
-        Date today = new Date();
-        int month = today.getMonth() + 1;
         DateTimeFormatter formatterForMonthYear = DateTimeFormatter.ofPattern("MM-yyyy");
-        String monthYearCur = (month < 10 ? "0" + month : month) + "-" + (today.getYear() + 1900);
+        String monthYearCur = (month < 10 ? "0" + month : month) + "-" + year;
         YearMonth monthYear = YearMonth.parse(monthYearCur, DateTimeFormatter.ofPattern("MM-yyyy"));
         List<PayRoll> payRollListForMonthYearList = new ArrayList<>();
         payRollList.forEach(item1 -> {
@@ -55,15 +52,13 @@ public class GetEmployeeInforService {
           }
         });
         if (Objects.nonNull(payRollListForMonthYearList) && !payRollListForMonthYearList.isEmpty()) {
-          item.setSalary(payRollListForMonthYearList.get(0).getSalary());
+          item.setCurrentSalary(payRollListForMonthYearList.get(0).getSalary());
         }
       });
-
-      return employeeDTOList;
+      return attendanceDetailsForEmployeeDTOList;
     } catch (Exception e) {
       logger.error("Error", e);
       throw new SystemException();
     }
   }
-
 }
