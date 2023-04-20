@@ -27,7 +27,7 @@ public class GetPayrollForMonthYearService {
   @Autowired
   private PayrollService payrollService;
 
-  public List<AttendanceDetailsForEmployeeDTO> GetPayrollForMonthYear(Integer month, Integer year) throws SystemException {
+  public List<AttendanceDetailsForEmployeeDTO> getPayrollForMonthYear(Integer month, Integer year) throws SystemException {
     try {
       List<AttendanceDetailsForEmployeeDTO> attendanceDetailsForEmployeeDTOList =
               getAttendanceForEmployeeService.getAttendanceForMonthYear(month, year);

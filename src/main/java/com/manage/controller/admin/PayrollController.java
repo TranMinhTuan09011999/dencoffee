@@ -38,7 +38,7 @@ public class PayrollController {
   public ResponseEntity<?> getPayrollForMonthYear(@PathVariable(value = "month") Integer month,
                                                   @PathVariable(value = "year") Integer year) throws SystemException {
     List<AttendanceDetailsForEmployeeDTO> attendanceDetailsForEmployeeDTOList =
-            getPayrollForMonthYearService.GetPayrollForMonthYear(month, year);
+            getPayrollForMonthYearService.getPayrollForMonthYear(month, year);
     return ResponseEntity.status(HttpStatus.OK).body(attendanceDetailsForEmployeeDTOList);
   }
 

@@ -8,10 +8,13 @@ import com.manage.dto.DateRequestDTO;
 import com.manage.jsonview.AttendanceViews;
 import com.manage.services.bl.GetAttendanceForEmployeeService;
 import com.manage.services.bl.GetAttendanceService;
+import com.manage.services.bl.DownloadExcelForPayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +33,9 @@ public class AttendanceForAdminController {
   @Autowired
   private GetAttendanceForEmployeeService getAttendanceForEmployeeService;
 
+  @Autowired
+  private DownloadExcelForPayrollService downloadExcelForPayrollService;
+
   @PostMapping("/get-attendance")
   @PreAuthorize("hasRole('ADMIN')")
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
@@ -44,6 +50,14 @@ public class AttendanceForAdminController {
   public ResponseEntity<?> getAttendanceForEmployee(@RequestBody AttendanceForEmployeeRequestDTO attendanceForEmployeeRequestDTO) throws SystemException {
     List<AttendanceDetailsForEmployeeDTO> attendanceDTOList = getAttendanceForEmployeeService.getAttendanceForEmployee(attendanceForEmployeeRequestDTO);
     return ResponseEntity.status(HttpStatus.OK).body(attendanceDTOList);
+  }
+
+  @GetMapping("/download-excel/{month}/{year}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> updatePayrollStatus(@PathVariable(value = "month") Integer month,
+                                        @PathVariable(value = "year") Integer year) throws SystemException {
+    boolean result = downloadExcelForPayrollService.downloadExcelForPayroll(month, year);
+    return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
 }
