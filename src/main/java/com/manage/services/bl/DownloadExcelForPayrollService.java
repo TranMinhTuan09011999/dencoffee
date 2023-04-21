@@ -57,7 +57,6 @@ public class DownloadExcelForPayrollService {
       Workbook workbook;
       if (excelFile.exists()) {
         workbook = new XSSFWorkbook(excelFile);
-        System.out.println("Excel file exists at " + filePath);
       } else {
         workbook = new XSSFWorkbook();
       }

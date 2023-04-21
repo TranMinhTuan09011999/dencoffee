@@ -9,6 +9,7 @@ import com.manage.jsonview.AttendanceViews;
 import com.manage.services.bl.GetAttendanceForEmployeeService;
 import com.manage.services.bl.GetAttendanceService;
 import com.manage.services.bl.DownloadExcelForPayrollService;
+import com.manage.services.bl.UpdatePayrollStatusForAttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,9 @@ public class AttendanceForAdminController {
   @Autowired
   private DownloadExcelForPayrollService downloadExcelForPayrollService;
 
+  @Autowired
+  private UpdatePayrollStatusForAttendanceService updatePayrollStatusForAttendanceService;
+
   @PostMapping("/get-attendance")
   @PreAuthorize("hasRole('ADMIN')")
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
@@ -57,6 +61,15 @@ public class AttendanceForAdminController {
   public ResponseEntity<?> updatePayrollStatus(@PathVariable(value = "month") Integer month,
                                         @PathVariable(value = "year") Integer year) throws SystemException {
     boolean result = downloadExcelForPayrollService.downloadExcelForPayroll(month, year);
+    return ResponseEntity.status(HttpStatus.OK).body(result);
+  }
+
+  @PostMapping("/update-payroll-status/{employeeId}/{month}/{year}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> updatePayrollStatus(@PathVariable(value = "employeeId") Long employeeId,
+                                               @PathVariable(value = "month") Integer month,
+                                               @PathVariable(value = "year") Integer year) throws SystemException {
+    boolean result = updatePayrollStatusForAttendanceService.updatePayrollStatusForAttendance(employeeId, month, year);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 

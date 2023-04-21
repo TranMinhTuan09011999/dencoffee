@@ -39,6 +39,9 @@ public class AttendanceDTO extends AbstractNonAuditDTO implements Serializable {
   @JsonSerialize(using = FormatDateTimeSerializer.class)
   private Date endDateTime;
 
+  @JsonView({PayrollViews.PayrollViewForMonthYearSet.class})
+  private Integer payrollStatus;
+
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
   private EmployeeDTO employee;
 
