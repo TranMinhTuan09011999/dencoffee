@@ -61,7 +61,7 @@ public class DownloadExcelForPayrollService {
       Workbook workbook = new XSSFWorkbook();
       for (int i = 12; i >= 1; i--) {
         LocalDate date = currentDate.minusMonths(i).withDayOfMonth(1);
-        Map<String, Object> createExcelFile = createExcelFileForAll(workbook, date);
+        createExcelFileForAll(workbook, date);
       }
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       workbook.write(outputStream);
@@ -75,7 +75,7 @@ public class DownloadExcelForPayrollService {
     return result;
   }
 
-  private Map<String, Object> createExcelFileForAll(Workbook workbook, LocalDate date) {
+  private void createExcelFileForAll(Workbook workbook, LocalDate date) {
     Map<String, Object> result = new HashMap<String, Object>();
     try {
       String monthYearFormat = date.format(DateTimeFormatter.ofPattern("MM-yyyy"));
@@ -90,7 +90,6 @@ public class DownloadExcelForPayrollService {
     } catch (SystemException e) {
       e.printStackTrace();
     }
-    return result;
   }
 
   private Map<String, Object> createExcelFile(Integer month, Integer year) {
