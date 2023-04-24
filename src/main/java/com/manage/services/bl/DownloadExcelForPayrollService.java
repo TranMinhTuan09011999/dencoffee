@@ -24,13 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -41,7 +44,7 @@ public class DownloadExcelForPayrollService {
   @Autowired
   private GetPayrollForMonthYearService getPayrollForMonthYearService;
 
-  public boolean downloadExcelForPayroll(Integer month, Integer year) throws SystemException {
+  public Map<String, Object> downloadExcelForPayroll(Integer month, Integer year) throws SystemException {
     try {
       return createExcelFile(month, year);
     } catch (Exception e) {
@@ -50,34 +53,70 @@ public class DownloadExcelForPayrollService {
     }
   }
 
-  private boolean createExcelFile(Integer month, Integer year) {
+  public Map<String, Object> downloadAllMonthForPayroll() throws SystemException {
+    Map<String, Object> result = new HashMap<String, Object>();
     try {
-      String filePath = "D:\\denCoffeeSalary.xlsx";
-      File excelFile = new File(filePath);
-      Workbook workbook;
-      if (excelFile.exists()) {
-        workbook = new XSSFWorkbook(excelFile);
-      } else {
-        workbook = new XSSFWorkbook();
+      LocalDate currentDate = LocalDate.now();
+      String excelFileName = "Bảng_Lương_Nhân_Viên";
+      Workbook workbook = new XSSFWorkbook();
+      for (int i = 12; i >= 1; i--) {
+        LocalDate date = currentDate.minusMonths(i).withDayOfMonth(1);
+        Map<String, Object> createExcelFile = createExcelFileForAll(workbook, date);
       }
-      String sheetNameFormat = "%d-%d";
-      int sheetName = workbook.getSheetIndex(String.format(sheetNameFormat, month, year));
-      if (sheetName != -1) {
-        return false;
-      }
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      workbook.write(outputStream);
+      workbook.close();
+      result.put("data", outputStream.toByteArray());
+      result.put("fileName", URLEncoder.encode(excelFileName, "UTF-8"));
+    } catch (Exception e) {
+      logger.error("Error", e);
+      throw new SystemException();
+    }
+    return result;
+  }
+
+  private Map<String, Object> createExcelFileForAll(Workbook workbook, LocalDate date) {
+    Map<String, Object> result = new HashMap<String, Object>();
+    try {
+      String monthYearFormat = date.format(DateTimeFormatter.ofPattern("MM-yyyy"));
+      Sheet sheet = workbook.createSheet(String.format(monthYearFormat));
+
+      Integer month = date.getMonthValue();
+      Integer year = date.getYear();
+
+      setTitle(workbook, sheet, month, year);
+      setHeader(workbook, sheet, month, year);
+      setData(workbook, sheet, month, year);
+    } catch (SystemException e) {
+      e.printStackTrace();
+    }
+    return result;
+  }
+
+  private Map<String, Object> createExcelFile(Integer month, Integer year) {
+    Map<String, Object> result = new HashMap<String, Object>();
+    String excelFileName = null;
+    try {
+      String sheetNameFormat = "Lương_Tháng_%d-%d";
+      excelFileName = String.format(sheetNameFormat, month, year);
+      Workbook workbook = new XSSFWorkbook();
+
       Sheet sheet = workbook.createSheet(String.format(sheetNameFormat, month, year));
 
       setTitle(workbook, sheet, month, year);
       setHeader(workbook, sheet, month, year);
       setData(workbook, sheet, month, year);
 
-      FileOutputStream outputStream = new FileOutputStream(filePath);
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       workbook.write(outputStream);
       workbook.close();
-    } catch (IOException | InvalidFormatException | SystemException e) {
+
+      result.put("data", outputStream.toByteArray());
+      result.put("fileName", URLEncoder.encode(excelFileName, "UTF-8"));
+    } catch (IOException | SystemException e) {
       e.printStackTrace();
     }
-    return true;
+    return result;
   }
 
   private void setTitle(Workbook workbook, Sheet sheet, Integer month, Integer year) {
