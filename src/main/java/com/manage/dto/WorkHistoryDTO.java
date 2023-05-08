@@ -31,5 +31,5 @@ public class WorkHistoryDTO extends AbstractDTO implements java.io.Serializable 
   @JsonSerialize(using = FormatDateSerializer.class)
   private Date endDate;
 
-  private EmployeeDTO employeeDTO;
+  private EmployeeDTO employee;
 }

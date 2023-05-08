@@ -9,18 +9,12 @@ import java.util.List;
 
 @Data
 public class AttendanceDetailsForEmployeeDTO {
-  @JsonView({AttendanceViews.AttendanceDetailsForEmployeeViewSet.class,
-          PayrollViews.PayrollViewForMonthYearSet.class})
+  @JsonView({AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
   private Long employeeId;
 
-  @JsonView({AttendanceViews.AttendanceDetailsForEmployeeViewSet.class,
-          PayrollViews.PayrollViewForMonthYearSet.class})
+  @JsonView({AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
   private String fullname;
 
-  @JsonView({PayrollViews.PayrollViewForMonthYearSet.class})
-  private Double currentSalary;
-
-  @JsonView({AttendanceViews.AttendanceDetailsForEmployeeViewSet.class,
-          PayrollViews.PayrollViewForMonthYearSet.class})
+  @JsonView({AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
   private List<AttendanceDTO> attendanceDTOList;
 }

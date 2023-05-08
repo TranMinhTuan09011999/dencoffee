@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manage.jsonview.AttendanceViews;
 import com.manage.jsonview.EmployeeViews;
-import com.manage.model.WorkHistory;
 import com.manage.util.DateHandler;
 import com.manage.util.FormatDateSerializer;
 import lombok.AllArgsConstructor;
@@ -56,7 +55,12 @@ public class EmployeeDTO extends AbstractDTO implements java.io.Serializable {
   @JsonView({EmployeeViews.EmployeeViewSet.class})
   private Double salary;
 
-  private List<WorkHistory> workHistoryList;
+  private Long positionId;
+
+  @JsonView({EmployeeViews.EmployeeViewSet.class})
+  private PositionDTO position;
+
+  private List<WorkHistoryDTO> workHistoryList;
 
   private List<AttendanceDTO> attendanceDTOList;
 }

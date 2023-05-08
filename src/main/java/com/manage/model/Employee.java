@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Date;
@@ -46,6 +48,10 @@ public class Employee extends AbstractAuditEntity implements java.io.Serializabl
   @Column(name = "status")
   private Integer status;
 
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @JoinColumn(name = "position_id", nullable = false)
+  private Position position;
+
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employee")
   private List<WorkHistory> workHistoryList;
 
@@ -53,5 +59,5 @@ public class Employee extends AbstractAuditEntity implements java.io.Serializabl
   private List<Attendance> attendanceList;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employee")
-  private List<PayRoll> payRollList;
+  private List<SalaryAdvance> salaryAdvanceList;
 }

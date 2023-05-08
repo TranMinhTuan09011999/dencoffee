@@ -28,4 +28,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     return employeeDTOList;
   }
 
+  @Override
+  public EmployeeDTO getEmployeeByEmployeeId(Long employeeId) {
+    Employee employee = employeeRepository.findEmployeeByEmployeeId(employeeId);
+    EmployeeDTO employeeDTO = employeeMapper.toDto(employee, new CycleAvoidingMappingContext());
+    return employeeDTO;
+  }
+
 }

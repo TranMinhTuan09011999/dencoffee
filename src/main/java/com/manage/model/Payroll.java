@@ -19,7 +19,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "payroll")
-public class PayRoll extends AbstractEntity implements java.io.Serializable {
+public class Payroll extends AbstractEntity implements java.io.Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -31,6 +31,12 @@ public class PayRoll extends AbstractEntity implements java.io.Serializable {
   @Column(name = "salary")
   private Double salary;
 
+  @Column(name = "allowance")
+  private Double allowance;
+
+  @Column(name = "bonus")
+  private Double bonus;
+
   @Column(name = "start_date")
   private Date startDate;
 
@@ -38,7 +44,7 @@ public class PayRoll extends AbstractEntity implements java.io.Serializable {
   private Date endDate;
 
   @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-  @JoinColumn(name = "employee_id", nullable = false)
-  private Employee employee;
+  @JoinColumn(name = "position_id", nullable = false)
+  private Position position;
 
 }

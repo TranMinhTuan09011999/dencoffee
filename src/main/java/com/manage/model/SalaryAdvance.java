@@ -18,28 +18,21 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "attendance")
-public class Attendance extends AbstractEntity implements java.io.Serializable {
+@Table(name = "salary_advance")
+public class SalaryAdvance extends AbstractEntity implements java.io.Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "attendance_id", nullable = false)
-  private Long attendanceId;
+  @Column(name = "salary_advance_id", nullable = false)
+  private Long salaryAdvanceId;
 
-  @Column(name = "start_date_time")
-  private Date startDateTime;
+  @Column(name = "salary_advance_amount")
+  private Double salaryAdvanceAmount;
 
-  @Column(name = "end_date_time")
-  private Date endDateTime;
-
-  @Column(name = "payroll_status")
-  private Integer payrollStatus;
-
-  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-  @JoinColumn(name = "position_id", nullable = false)
-  private Position position;
+  @Column(name = "salary_advance_date")
+  private Date salaryAdvanceDate;
 
   @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
   @JoinColumn(name = "employee_id", nullable = false)
