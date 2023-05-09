@@ -1,5 +1,9 @@
 package com.manage.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.manage.jsonview.SalaryAdvanceViews;
+import com.manage.util.FormatDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,8 +23,11 @@ public class SalaryAdvanceDTO extends AbstractNonAuditDTO implements java.io.Ser
 
   private Long salaryAdvanceId;
 
+  @JsonView({SalaryAdvanceViews.GetSalaryAdvanceViewsSet.class})
   private Double salaryAdvanceAmount;
 
+  @JsonView({SalaryAdvanceViews.GetSalaryAdvanceViewsSet.class})
+  @JsonSerialize(using = FormatDateSerializer.class)
   private Date salaryAdvanceDate;
 
   private EmployeeDTO employee;

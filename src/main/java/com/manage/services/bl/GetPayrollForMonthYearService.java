@@ -50,6 +50,7 @@ public class GetPayrollForMonthYearService {
       if (Objects.nonNull(attendanceDetailsForEmployeeDTOList) && !attendanceDetailsForEmployeeDTOList.isEmpty()) {
         attendanceDetailsForEmployeeDTOList.forEach(item -> {
           EmployeePayrollDTO employeePayrollDTO = new EmployeePayrollDTO();
+          employeePayrollDTO.setEmployeeId(item.getEmployeeId());
           employeePayrollDTO.setFullname(item.getFullname());
 
           EmployeeDTO employeeDTO = employeeService.getEmployeeByEmployeeId(item.getEmployeeId());
@@ -80,7 +81,7 @@ public class GetPayrollForMonthYearService {
           Double sundayHourSalaryAmount = 1000 * sundayHourTotal;
           employeePayrollDTO.setSundayBonus(sundayHourSalaryAmount);
 
-          Double salaryAdvance = getSalaryAdvance(month, item.getEmployeeId());
+          Double salaryAdvance = getSalaryAdvance(month, year, item.getEmployeeId());
           employeePayrollDTO.setSalaryAdvance(salaryAdvance);
 
           Double salaryAmount = employeePayrollDTO.getHourTotal() * employeePayrollDTO.getHourSalary() +
@@ -181,9 +182,9 @@ public class GetPayrollForMonthYearService {
     return hourTotal;
   }
 
-  private Double getSalaryAdvance(Integer month, Long employeeId) {
+  private Double getSalaryAdvance(Integer month, Integer year, Long employeeId) {
     Double salaryAdvanceAmount = 0.0;
-    List<SalaryAdvanceDTO> salaryAdvanceDTOList = salaryAdvanceService.getSalaryAdvanceByMonthAndEmployee(month, employeeId);
+    List<SalaryAdvanceDTO> salaryAdvanceDTOList = salaryAdvanceService.getSalaryAdvanceByMonthAndEmployee(month, year, employeeId);
     if (Objects.nonNull(salaryAdvanceDTOList) && !salaryAdvanceDTOList.isEmpty()) {
       for (int i=0; i<salaryAdvanceDTOList.size(); i++) {
         salaryAdvanceAmount += salaryAdvanceDTOList.get(i).getSalaryAdvanceAmount();

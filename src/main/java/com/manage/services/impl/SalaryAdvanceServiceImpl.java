@@ -22,10 +22,15 @@ public class SalaryAdvanceServiceImpl implements SalaryAdvanceService {
   private SalaryAdvanceMapper salaryAdvanceMapper;
 
   @Override
-  public List<SalaryAdvanceDTO> getSalaryAdvanceByMonthAndEmployee(Integer month, Long employeeId) {
-    List<SalaryAdvance> salaryAdvanceList = salaryAdvanceRepository.getSalaryAdvanceByMonthAndEmployee(month, employeeId);
+  public List<SalaryAdvanceDTO> getSalaryAdvanceByMonthAndEmployee(Integer month, Integer year, Long employeeId) {
+    List<SalaryAdvance> salaryAdvanceList = salaryAdvanceRepository.getSalaryAdvanceByMonthAndEmployee(month, year, employeeId);
     List<SalaryAdvanceDTO> salaryAdvanceDTOList = salaryAdvanceList.stream().map(e -> salaryAdvanceMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
     return salaryAdvanceDTOList;
+  }
+
+  @Override
+  public void save(SalaryAdvance salaryAdvance) {
+    salaryAdvanceRepository.save(salaryAdvance);
   }
 
 }

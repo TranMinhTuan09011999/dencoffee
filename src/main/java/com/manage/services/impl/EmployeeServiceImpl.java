@@ -35,4 +35,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     return employeeDTO;
   }
 
+  @Override
+  public Employee getEmployeeById(Long employeeId) {
+    return employeeRepository.findEmployeeByEmployeeId(employeeId);
+  }
+
 }
