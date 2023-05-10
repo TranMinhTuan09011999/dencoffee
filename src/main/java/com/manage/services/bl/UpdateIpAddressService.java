@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 
 @Service
 public class UpdateIpAddressService {
@@ -18,6 +19,7 @@ public class UpdateIpAddressService {
   @Autowired
   private IpAddressRepository ipAddressRepository;
 
+  @Transactional
   public Boolean updateIpAddressStatus(IpAddressDTO ipAddressDTO) throws SystemException {
     try {
       IpAddress ipAddress = ipAddressRepository.getOne(ipAddressDTO.getIpAddressId());
@@ -30,6 +32,7 @@ public class UpdateIpAddressService {
     }
   }
 
+  @Transactional
   public Boolean updateIpAddress(IpAddressDTO ipAddressDTO) throws SystemException {
     try {
       IpAddress ipAddress = ipAddressRepository.getOne(ipAddressDTO.getIpAddressId());

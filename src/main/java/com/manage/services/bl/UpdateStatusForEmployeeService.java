@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +26,7 @@ public class UpdateStatusForEmployeeService {
   @Autowired
   private WorkHistoryRepository workHistoryRepository;
 
+  @Transactional
   public Boolean updateStatusForEmployee(Long employeeId, Integer status) throws SystemException {
     try {
       updateStatus(employeeId, status);

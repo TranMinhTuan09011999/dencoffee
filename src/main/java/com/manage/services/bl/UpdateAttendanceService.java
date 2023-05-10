@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 
 @Service
 public class UpdateAttendanceService {
@@ -18,6 +19,7 @@ public class UpdateAttendanceService {
   @Autowired
   private AttendanceRepository attendanceRepository;
 
+  @Transactional
   public Boolean updateEndDateTimeForAttendance(AttendanceEndDateTimeUpdateDTO attendanceEndDateTimeUpdateDTO) throws SystemException {
     try {
       updateEndDateTime(attendanceEndDateTimeUpdateDTO);

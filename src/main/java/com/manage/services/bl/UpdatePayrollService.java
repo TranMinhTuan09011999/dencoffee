@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +30,7 @@ public class UpdatePayrollService {
   @Autowired
   private PositionService positionService;
 
+  @Transactional
   public boolean updatePayroll(UpdatePayrollInforDTO updatePayrollInforDTO) throws SystemException {
     try {
       Payroll payroll = payrollService.getPayrollByPayrollId(updatePayrollInforDTO.getPayrollId());

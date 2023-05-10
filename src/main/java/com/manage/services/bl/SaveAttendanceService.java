@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 
 @Service
 public class SaveAttendanceService {
@@ -28,6 +29,7 @@ public class SaveAttendanceService {
   @Autowired
   private PositionRepository positionRepository;
 
+  @Transactional
   public Boolean saveAttendance(AttendaceSaveRequestDTO attendaceSaveRequestDTO) throws SystemException {
     try {
       Attendance attendance = new Attendance();

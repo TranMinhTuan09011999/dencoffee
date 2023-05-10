@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 import java.util.Date;
 
 @Service
@@ -34,10 +35,10 @@ public class RegisterEmployeeService {
   @Autowired
   private PositionRepository positionRepository;
 
+  @Transactional
   public Boolean registerEmployee(EmployeeDTO employeeDTO) throws SystemException {
     try {
       saveEmployee(employeeDTO);
-      saveWorkHistory();
       return true;
     } catch (Exception e) {
       logger.error("Error", e);
@@ -59,15 +60,14 @@ public class RegisterEmployeeService {
     employee.setCreatedBy("Admin");
     employee.setModifiedDate(new Date());
     employee.setModifiedBy("Admin");
-    employeeRepository.save(employee);
+    Employee employeeForWorkHistory = employeeRepository.save(employee);
+    saveWorkHistory(employeeForWorkHistory);
   }
 
-  private void saveWorkHistory() {
+  private void saveWorkHistory(Employee employee) {
     WorkHistory workHistory = new WorkHistory();
     workHistory.setStartDate(new Date());
-    Long maxId = employeeRepository.getMaxId();
-    Employee employeeForWorkHistory = employeeRepository.findEmployeeByEmployeeId(maxId);
-    workHistory.setEmployee(employeeForWorkHistory);
+    workHistory.setEmployee(employee);
     workHistory.setCreatedDate(new Date());
     workHistory.setCreatedBy("Admin");
     workHistory.setModifiedDate(new Date());

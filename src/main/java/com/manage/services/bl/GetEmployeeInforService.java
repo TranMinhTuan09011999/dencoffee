@@ -25,9 +25,6 @@ public class GetEmployeeInforService {
   @Autowired
   private EmployeeService employeeService;
 
-  @Autowired
-  private PayrollService payrollService;
-
   public List<EmployeeDTO> getEmployeeInforByStatus(Integer status) throws SystemException {
     try {
       List<EmployeeDTO> employeeDTOList = employeeService.getAllEmployeeByStatus(status);

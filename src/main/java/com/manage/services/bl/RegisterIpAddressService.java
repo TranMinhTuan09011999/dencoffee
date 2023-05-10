@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.SystemException;
+import javax.transaction.Transactional;
 
 @Service
 public class RegisterIpAddressService {
@@ -16,6 +17,7 @@ public class RegisterIpAddressService {
   @Autowired
   private IpAddressRepository ipAddressRepository;
 
+  @Transactional
   public Boolean registerIpAddress(String ipAddress) throws SystemException {
     try {
       saveIpAddress(ipAddress);
