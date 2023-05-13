@@ -1,8 +1,7 @@
 package com.manage.services.bl;
 
 import com.manage.dto.AttendanceDTO;
-import com.manage.dto.AttendanceDetailsForEmployeeDTO;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import com.manage.dto.EmployeePayrollDTO;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -30,6 +29,8 @@ import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -121,168 +122,122 @@ public class DownloadExcelForPayrollService {
   private void setTitle(Workbook workbook, Sheet sheet, Integer month, Integer year) {
     String sheetNameFormat = "%d-%d";
     Row row = sheet.createRow(3);
-    Cell cell = row.createCell(12);
-    cell.setCellValue("BẢNG LƯƠNG THÁNG " + String.format(sheetNameFormat, month, year));
-
     CellStyle cellStyle = workbook.createCellStyle();
     Font font = workbook.createFont();
     font.setColor(IndexedColors.RED.getIndex());
     font.setBold(true);
     cellStyle.setFont(font);
-    cell.setCellStyle(cellStyle);;
+    createCell(row, sheet, 12, "BẢNG LƯƠNG THÁNG " + String.format(sheetNameFormat, month, year), cellStyle, 0);
   }
 
   private void setHeader(Workbook workbook, Sheet sheet, Integer month, Integer year) {
     LocalDate date = LocalDate.of(year, month, 1);
     int daysInMonth = date.lengthOfMonth();
     Row row = sheet.createRow(6);
-    for (int i=0; i<daysInMonth; i++) {
-      Cell cell = row.createCell(4 + i);
-      cell.setCellValue(i + 1);
-      CellStyle styleForCell = workbook.createCellStyle();
-      styleForCell.setAlignment(HorizontalAlignment.CENTER);
-      styleForCell.setBorderTop(BorderStyle.THIN);
-      styleForCell.setBorderLeft(BorderStyle.THIN);
-      styleForCell.setBorderRight(BorderStyle.THIN);
-      styleForCell.setBorderBottom(BorderStyle.THIN);
-      styleForCell.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-      styleForCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-      cell.setCellStyle(styleForCell);
-      sheet.setColumnWidth(4 + i, 4 * 256);
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(year, month - 1, 1);
+    while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+      calendar.add(Calendar.DAY_OF_MONTH, 1);
     }
+    List<Integer> sundayDayList = new ArrayList<>();
+    while (calendar.get(Calendar.MONTH) == month - 1) {
+      int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+      sundayDayList.add(dayOfMonth);
+      calendar.add(Calendar.DAY_OF_MONTH, 7);
+    }
+    for (int i=0; i<daysInMonth; i++) {
+      IndexedColors color = null;
+      if (sundayDayList.contains(i+1)) {
+        color = IndexedColors.RED;
+      } else {
+        color = IndexedColors.PALE_BLUE;
+      }
+      CellStyle cellStyle = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN,
+              BorderStyle.THIN, BorderStyle.THIN, color, FillPatternType.SOLID_FOREGROUND, null);
+      createCell(row, sheet, 4 + i, String.valueOf(i + 1), cellStyle, 4);
+    }
+    CellStyle styleForCell = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN, BorderStyle.THIN, BorderStyle.THIN,
+            IndexedColors.PALE_BLUE, FillPatternType.SOLID_FOREGROUND, null);
+    createCell(row, sheet, 4 + daysInMonth, "TỔNG GIỜ", styleForCell, 12);
+    createCell(row, sheet, 4 + daysInMonth + 1, "LƯƠNG CƠ BẢN", styleForCell, 15);
+    createCell(row, sheet, 4 + daysInMonth + 2, "TRỢ CẤP", styleForCell, 15);
+    createCell(row, sheet, 4 + daysInMonth + 3, "THƯỞNG", styleForCell, 15);
+    createCell(row, sheet, 4 + daysInMonth + 4, "THƯỞNG (CN)", styleForCell, 15);
+    createCell(row, sheet, 4 + daysInMonth + 5, "ỨNG TRƯỚC", styleForCell, 15);
+    createCell(row, sheet, 4 + daysInMonth + 6, "LƯƠNG", styleForCell, 15);
+    createCell(row, sheet, 4 + daysInMonth + 7, "THỰC LÃNH", styleForCell, 15);
+    createCell(row, sheet, 4 + daysInMonth + 8, "THANH TOÁN LƯƠNG", styleForCell, 19);
 
-    Cell cellForHourTotal = row.createCell(4 + daysInMonth);
-    cellForHourTotal.setCellValue("TỔNG GIỜ");
-    Cell cellForBasicSalary = row.createCell(4 + daysInMonth + 1);
-    cellForBasicSalary.setCellValue("LƯƠNG CƠ BẢN");
-    Cell cellForSalaryTotal = row.createCell(4 + daysInMonth + 2);
-    cellForSalaryTotal.setCellValue("TỔNG LƯƠNG");
-    CellStyle styleForCell = workbook.createCellStyle();
-    styleForCell.setAlignment(HorizontalAlignment.CENTER);
-    styleForCell.setBorderTop(BorderStyle.THIN);
-    styleForCell.setBorderLeft(BorderStyle.THIN);
-    styleForCell.setBorderRight(BorderStyle.THIN);
-    styleForCell.setBorderBottom(BorderStyle.THIN);
-    styleForCell.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-    styleForCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-    cellForHourTotal.setCellStyle(styleForCell);
-    cellForBasicSalary.setCellStyle(styleForCell);
-    cellForSalaryTotal.setCellStyle(styleForCell);
-    sheet.setColumnWidth(4 + daysInMonth, 14 * 256);
-    sheet.setColumnWidth(4 + daysInMonth + 1, 18 * 256);
-    sheet.setColumnWidth(4 + daysInMonth + 2, 17 * 256);
-
-    CellRangeAddress mergedCellForMonths = new CellRangeAddress(5, 5, 4, 3 + daysInMonth);
-    sheet.addMergedRegion(mergedCellForMonths);
-    RegionUtil.setBorderTop(BorderStyle.THIN, mergedCellForMonths, sheet);
-    RegionUtil.setBorderBottom(BorderStyle.THIN, mergedCellForMonths, sheet);
-    RegionUtil.setBorderLeft(BorderStyle.THIN, mergedCellForMonths, sheet);
-    RegionUtil.setBorderRight(BorderStyle.THIN, mergedCellForMonths, sheet);
-
-    XSSFCell mergedCellForMonth = (XSSFCell) sheet.getRow(5).getCell(4);
     String sheetNameFormat = "%d-%d";
-    mergedCellForMonth.setCellValue("NGÀY TRONG THÁNG " + String.format(sheetNameFormat, month, year));
-    CellStyle cellStyle = workbook.createCellStyle();
-    cellStyle.setAlignment(HorizontalAlignment.CENTER);
-    cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-    cellStyle.setBorderTop(BorderStyle.THIN);
-    cellStyle.setBorderLeft(BorderStyle.THIN);
-    cellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-    cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-    mergedCellForMonth.setCellStyle(cellStyle);
+    String value = "NGÀY TRONG THÁNG " + String.format(sheetNameFormat, month, year);
+    CellStyle cellStyle = setCssForCell(workbook, HorizontalAlignment.CENTER, null, null, BorderStyle.THIN, BorderStyle.THIN, IndexedColors.PALE_BLUE,
+            FillPatternType.SOLID_FOREGROUND, null);
+    mergeCell(sheet, 5, 5, 4, 3 + daysInMonth, value, cellStyle);
 
-    CellRangeAddress mergedCellForNames = new CellRangeAddress(5, 6, 1, 3);
-    sheet.addMergedRegion(mergedCellForNames);
-    RegionUtil.setBorderTop(BorderStyle.THIN, mergedCellForNames, sheet);
-    RegionUtil.setBorderBottom(BorderStyle.THIN, mergedCellForNames, sheet);
-    RegionUtil.setBorderLeft(BorderStyle.THIN, mergedCellForNames, sheet);
-    RegionUtil.setBorderRight(BorderStyle.THIN, mergedCellForNames, sheet);
-
-    XSSFCell mergedCellForName = (XSSFCell) sheet.getRow(5).getCell(1);
-    mergedCellForName.setCellValue("HỌ VÀ TÊN");
-    CellStyle cellStyleForName = workbook.createCellStyle();
-    cellStyleForName.setAlignment(HorizontalAlignment.CENTER);
-    cellStyleForName.setVerticalAlignment(VerticalAlignment.CENTER);
-    cellStyleForName.setBorderTop(BorderStyle.THIN);
-    cellStyleForName.setBorderLeft(BorderStyle.THIN);
-    cellStyleForName.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-    cellStyleForName.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-    mergedCellForName.setCellStyle(cellStyleForName);
+    CellStyle cellStyleForName = setCssForCell(workbook, HorizontalAlignment.CENTER, null, null, BorderStyle.THIN, BorderStyle.THIN,
+            IndexedColors.PALE_BLUE, FillPatternType.SOLID_FOREGROUND, VerticalAlignment.CENTER);
+    mergeCell(sheet, 5, 6, 1, 3, "HỌ VÀ TÊN", cellStyleForName);
   }
 
   private void setData(Workbook workbook, Sheet sheet, Integer month, Integer year) throws SystemException {
     LocalDate date = LocalDate.of(year, month, 1);
     int daysInMonth = date.lengthOfMonth();
-    List<AttendanceDetailsForEmployeeDTO> attendanceDetailsForEmployeeDTOList =
+    List<EmployeePayrollDTO> attendanceDetailsForEmployeeDTOList =
             getPayrollForMonthYearService.getPayrollForMonthYear(month, year);
     for (int i = 0; i < attendanceDetailsForEmployeeDTOList.size(); i++) {
       Row row = sheet.createRow(7 + i);
-      CellRangeAddress mergedCellForNames = new CellRangeAddress(7 + i, 7 + i, 1, 3);
-      sheet.addMergedRegion(mergedCellForNames);
-      RegionUtil.setBorderTop(BorderStyle.THIN, mergedCellForNames, sheet);
-      RegionUtil.setBorderBottom(BorderStyle.THIN, mergedCellForNames, sheet);
-      RegionUtil.setBorderLeft(BorderStyle.THIN, mergedCellForNames, sheet);
-      RegionUtil.setBorderRight(BorderStyle.THIN, mergedCellForNames, sheet);
-      XSSFCell mergedCellForName = (XSSFCell) sheet.getRow(7 + i).getCell(1);
-      mergedCellForName.setCellValue(attendanceDetailsForEmployeeDTOList.get(i).getFullname());
-      double hourTotalOfMonth = 0;
-      for (int j=0; j<daysInMonth; j++) {
-        double hourTotalOfDay = getHourTotalOfDay(j+1, attendanceDetailsForEmployeeDTOList.get(i).getAttendanceDTOList());
-        hourTotalOfMonth += hourTotalOfDay;
-        Cell cell = row.createCell(4+j);
-        cell.setCellValue(hourTotalOfDay);
-        CellStyle styleForCell = workbook.createCellStyle();
-        styleForCell.setAlignment(HorizontalAlignment.CENTER);
-        styleForCell.setBorderRight(BorderStyle.THIN);
-        styleForCell.setBorderBottom(BorderStyle.THIN);
-        cell.setCellStyle(styleForCell);
+      IndexedColors color = null;
+      if (attendanceDetailsForEmployeeDTOList.get(i).getPosition().equals("Phục vụ")) {
+        color = IndexedColors.ORANGE;
+      } else if (attendanceDetailsForEmployeeDTOList.get(i).getPosition().equals("Pha chế")) {
+        color = IndexedColors.YELLOW;
+      } else if (attendanceDetailsForEmployeeDTOList.get(i).getPosition().equals("Quản lý")) {
+        color = IndexedColors.LIGHT_GREEN;
       }
-      Cell cell = row.createCell(4 + daysInMonth + 0);
-      cell.setCellValue(hourTotalOfMonth);
-      CellStyle styleForCell = workbook.createCellStyle();
-      styleForCell.setAlignment(HorizontalAlignment.CENTER);
-      styleForCell.setBorderRight(BorderStyle.THIN);
-      styleForCell.setBorderBottom(BorderStyle.THIN);
-      cell.setCellStyle(styleForCell);
-
-      Cell cell1 = row.createCell(4 + daysInMonth + 1);
-      DecimalFormat df = new DecimalFormat("#,###");
-      cell1.setCellValue(df.format(attendanceDetailsForEmployeeDTOList.get(i).getCurrentSalary()));
-      CellStyle styleForCell1 = workbook.createCellStyle();
-      styleForCell1.setAlignment(HorizontalAlignment.CENTER);
-      styleForCell1.setAlignment(HorizontalAlignment.CENTER);
-      styleForCell1.setBorderRight(BorderStyle.THIN);
-      styleForCell1.setBorderBottom(BorderStyle.THIN);
-      cell1.setCellStyle(styleForCell1);
-
-      Cell cell2 = row.createCell(4 + daysInMonth + 2);
-      cell2.setCellValue(getSalary(hourTotalOfMonth, attendanceDetailsForEmployeeDTOList.get(i).getCurrentSalary()));
-      CellStyle styleForCell2 = workbook.createCellStyle();
-      styleForCell2.setAlignment(HorizontalAlignment.CENTER);
-      styleForCell2.setBorderRight(BorderStyle.THIN);
-      styleForCell2.setBorderBottom(BorderStyle.THIN);
-      cell2.setCellStyle(styleForCell2);
+      CellStyle cellStyleForName = setCssForCell(workbook, HorizontalAlignment.CENTER, null, BorderStyle.THIN, null, BorderStyle.THIN,
+              color, FillPatternType.SOLID_FOREGROUND, null);
+      mergeCell(sheet, 7 + i, 7 + i, 1, 3, attendanceDetailsForEmployeeDTOList.get(i).getFullname(), cellStyleForName);
+      CellStyle styleForCell = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN, null, null, null, null, null);
+      for (int j = 0; j < daysInMonth; j++) {
+        double hourTotalOfDay = getHourTotalOfDay(j + 1, attendanceDetailsForEmployeeDTOList.get(i).getAttendanceDTOList());
+        createCell(row, sheet, 4+j, getDoubleValue(hourTotalOfDay), styleForCell, 0);
+      }
+      createCell(row, sheet, 4 + daysInMonth, getDoubleValue(attendanceDetailsForEmployeeDTOList.get(i).getHourTotal()), styleForCell, 12);
+      createCell(row, sheet, 4 + daysInMonth + 1, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getHourSalary()), styleForCell, 15);
+      createCell(row, sheet, 4 + daysInMonth + 2, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getAllowance()), styleForCell, 15);
+      createCell(row, sheet, 4 + daysInMonth + 3, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getBonus()), styleForCell, 15);
+      createCell(row, sheet, 4 + daysInMonth + 4, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getSundayBonus()), styleForCell, 15);
+      createCell(row, sheet, 4 + daysInMonth + 5, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getSalaryAdvance()), styleForCell, 15);
+      createCell(row, sheet, 4 + daysInMonth + 6, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getSalaryAmount()), styleForCell, 15);
+      createCell(row, sheet, 4 + daysInMonth + 7, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getActualSalary()), styleForCell, 15);
+      if (attendanceDetailsForEmployeeDTOList.get(i).getPaymentStatus() == true) {
+        createCell(row, sheet, 4 + daysInMonth + 8, "ĐÃ THANH TOÁN", styleForCell, 19);
+      } else {
+        createCell(row, sheet, 4 + daysInMonth + 8, "CHƯA THANH TOÁN", styleForCell, 19);
+      }
     }
+
+    setNote(workbook, sheet, attendanceDetailsForEmployeeDTOList.size() + 9);
   }
 
   private double getHourTotalOfDay(Integer day, List<AttendanceDTO> attendanceDTOList) {
     if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
-      double hourTotal = attendanceDTOList.stream().filter(item -> item.getStartDateTime().getDay() == day)
-              .mapToDouble(item -> getHourTotalBBetween2Time(item.getStartDateTime(), item.getEndDateTime())).sum();
+      double hourTotal = attendanceDTOList.stream().filter(item -> item.getStartDateTime().getDate() == day)
+              .mapToDouble(item -> getHourTotalBetween2Time(item.getStartDateTime(), item.getEndDateTime())).sum();
       return hourTotal;
     }
     return 0;
   }
 
-  private double getHourTotalBBetween2Time(Date startDateTime, Date endDateTime) {
+  private double getHourTotalBetween2Time(Date startDateTime, Date endDateTime) {
     if (endDateTime != null) {
-      var diff = endDateTime.getTime() - startDateTime.getTime();
-      var hours = diff / (1000 * 60 * 60);
-      var integerPart = Math.floor(hours);
+      long diff = endDateTime.getTime() - startDateTime.getTime();
+      double hours = (double) diff / (1000*60*60);
+      double integerPart = Math.floor(hours);
       var decimalPart = (hours - integerPart) * 60;
-      if (decimalPart >= 25 && decimalPart <= 55) {
+      if (decimalPart >= 25 && decimalPart < 55) {
         return integerPart + 0.5;
-      } else if (decimalPart > 55) {
+      } else if (decimalPart >= 55) {
         return integerPart + 1;
       }
       return integerPart;
@@ -290,9 +245,107 @@ public class DownloadExcelForPayrollService {
     return 0;
   }
 
-  private String getSalary(double hourTotal, Double basicSalary) {
-    Double salaryTotal = hourTotal * basicSalary;
+  private void createCell(Row row, Sheet sheet, int column, String value, CellStyle styleForCell, int width) {
+    Cell cell = row.createCell(column);
+    if (value != null) {
+      cell.setCellValue(value);
+    }
+    if (styleForCell != null) {
+      cell.setCellStyle(styleForCell);
+    }
+    if (width > 0) {
+      sheet.setColumnWidth(column, width * 256);
+    }
+  }
+
+  private void mergeCell(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol, String value, CellStyle cellStyle) {
+    CellRangeAddress mergedCell = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+    sheet.addMergedRegion(mergedCell);
+    RegionUtil.setBorderTop(BorderStyle.THIN, mergedCell, sheet);
+    RegionUtil.setBorderBottom(BorderStyle.THIN, mergedCell, sheet);
+    RegionUtil.setBorderLeft(BorderStyle.THIN, mergedCell, sheet);
+    RegionUtil.setBorderRight(BorderStyle.THIN, mergedCell, sheet);
+
+    XSSFCell cell = (XSSFCell) sheet.getRow(firstRow).getCell(firstCol);
+    cell.setCellValue(value);
+    cell.setCellStyle(cellStyle);
+  }
+
+  private CellStyle setCssForCell(Workbook workbook, HorizontalAlignment alignment,
+                             BorderStyle borderRight, BorderStyle borderBottom,
+                             BorderStyle borderTop, BorderStyle borderLeft, IndexedColors fillForegroundColor,
+                             FillPatternType fillPattern, VerticalAlignment verticalAlignment) {
+    CellStyle styleForCell = workbook.createCellStyle();
+    if (alignment != null) {
+      styleForCell.setAlignment(alignment);
+    }
+    if (borderRight != null) {
+      styleForCell.setBorderRight(borderRight);
+    }
+    if (borderBottom != null) {
+      styleForCell.setBorderBottom(borderBottom);
+    }
+    if (borderTop != null) {
+      styleForCell.setBorderTop(borderTop);
+    }
+    if (borderLeft != null) {
+      styleForCell.setBorderLeft(borderLeft);
+    }
+    if (fillForegroundColor != null) {
+      styleForCell.setFillForegroundColor(fillForegroundColor.getIndex());
+    }
+    if (fillPattern != null) {
+      styleForCell.setFillPattern(fillPattern);
+    }
+    if (verticalAlignment != null) {
+      styleForCell.setVerticalAlignment(verticalAlignment);
+    }
+    return styleForCell;
+  }
+
+  private String getDoubleValue(double number) {
+    int integerPart = (int) number;
+    double decimalPart = number - integerPart;
+    if (decimalPart > 0) {
+      return String.valueOf(number);
+    }
+    return String.valueOf(integerPart);
+  }
+
+  private String addCommaForSalary(double value) {
+    double number = Double.valueOf(getDoubleValue(value));
     DecimalFormat df = new DecimalFormat("#,###");
-    return df.format(salaryTotal);
+    return df.format(number);
+  }
+
+  private void setNote(Workbook workbook, Sheet sheet, int rownum) {
+    Row row = sheet.createRow(rownum);
+    createCell(row, sheet, 1, "CHÚ THÍCH", null, 0);
+    CellStyle cellStyle = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN,
+            BorderStyle.THIN, BorderStyle.THIN, null, FillPatternType.SOLID_FOREGROUND, null);
+    Row row1 = sheet.createRow(rownum + 2);
+    createCell(row1, sheet, 1, "VỊ TRÍ", cellStyle, 0);
+    createCell(row1, sheet, 2, "MÀU", cellStyle, 0);
+    Row row2 = sheet.createRow(rownum + 3);
+    CellStyle cellStyle2 = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN,
+            null, BorderStyle.THIN, IndexedColors.LIGHT_GREEN, FillPatternType.SOLID_FOREGROUND, null);
+    createCell(row2, sheet, 1, "QUẢN LÝ", cellStyle, 0);
+    createCell(row2, sheet, 2, null, cellStyle2, 0);
+    Row row3 = sheet.createRow(rownum + 4);
+    CellStyle cellStyle3 = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN,
+            null, BorderStyle.THIN, IndexedColors.YELLOW, FillPatternType.SOLID_FOREGROUND, null);
+    createCell(row3, sheet, 1, "PHA CHẾ", cellStyle, 0);
+    createCell(row3, sheet, 2, null, cellStyle3, 0);
+    Row row4 = sheet.createRow(rownum + 5);
+    CellStyle cellStyle4 = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN,
+            null, BorderStyle.THIN, IndexedColors.ORANGE, FillPatternType.SOLID_FOREGROUND, null);
+    createCell(row4, sheet, 1, "PHỤC VỤ", cellStyle, 0);
+    createCell(row4, sheet, 2, null, cellStyle4, 0);
+
+    Row row5 = sheet.createRow(rownum + 7);
+    CellStyle cellStyle5 = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN,
+            BorderStyle.THIN, BorderStyle.THIN, IndexedColors.RED, FillPatternType.SOLID_FOREGROUND, null);
+    createCell(row5, sheet, 1, "CHỦ NHẬT", cellStyle, 12);
+    createCell(row5, sheet, 2, null, cellStyle5, 0);
   }
 }

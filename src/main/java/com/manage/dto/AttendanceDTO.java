@@ -3,6 +3,7 @@ package com.manage.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.manage.jsonview.AttendanceViews;
+import com.manage.jsonview.PayrollViews;
 import com.manage.model.Position;
 import com.manage.util.FormatDateTimeSerializer;
 import lombok.AllArgsConstructor;
@@ -23,16 +24,19 @@ public class AttendanceDTO extends AbstractNonAuditDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
+  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class,
+          PayrollViews.PayrollViewForMonthYearSet.class})
   private Long attendanceId;
 
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class,
-          AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
+          AttendanceViews.AttendanceDetailsForEmployeeViewSet.class,
+          PayrollViews.PayrollViewForMonthYearSet.class})
   @JsonSerialize(using = FormatDateTimeSerializer.class)
   private Date startDateTime;
 
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class,
-          AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
+          AttendanceViews.AttendanceDetailsForEmployeeViewSet.class,
+          PayrollViews.PayrollViewForMonthYearSet.class})
   @JsonSerialize(using = FormatDateTimeSerializer.class)
   private Date endDateTime;
 

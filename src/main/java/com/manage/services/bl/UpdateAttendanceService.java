@@ -33,7 +33,6 @@ public class UpdateAttendanceService {
   private void updateEndDateTime(AttendanceEndDateTimeUpdateDTO attendanceEndDateTimeUpdateDTO) {
     Attendance attendance = attendanceRepository.getOne(attendanceEndDateTimeUpdateDTO.getAttendanceId());
     attendance.setEndDateTime(attendanceEndDateTimeUpdateDTO.getEndDateTime());
-    attendance.setPayrollStatus(0);
     attendanceRepository.save(attendance);
   }
 

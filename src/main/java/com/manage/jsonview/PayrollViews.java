@@ -4,4 +4,7 @@ public class PayrollViews {
 
   public static class PayrollViewForCurrentSet {
   }
+
+  public static class PayrollViewForMonthYearSet {
+  }
 }

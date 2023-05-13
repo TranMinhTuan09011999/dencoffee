@@ -36,6 +36,7 @@ public class PayrollController {
   private UpdatePayrollService updatePayrollService;
 
   @GetMapping("/get-payroll/{month}/{year}")
+  @JsonView({PayrollViews.PayrollViewForMonthYearSet.class})
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> getPayrollForMonthYear(@PathVariable(value = "month") Integer month,
                                                   @PathVariable(value = "year") Integer year) throws SystemException {

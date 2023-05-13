@@ -36,8 +36,9 @@ public class SaveAttendanceService {
       attendance.setStartDateTime(attendaceSaveRequestDTO.getStartDateTime());
       Employee employee = employeeRepository.findEmployeeByEmployeeId(attendaceSaveRequestDTO.getEmployeeId());
       attendance.setEmployee(employee);
-      Position position = positionRepository.getOne(employee.getEmployeeId());
+      Position position = positionRepository.getOne(employee.getPosition().getPositionId());
       attendance.setPosition(position);
+      attendance.setPayrollStatus(0);
       attendanceRepository.save(attendance);
       return true;
     } catch (Exception e) {
