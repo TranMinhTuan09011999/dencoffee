@@ -75,11 +75,4 @@ public class EmployeeForAdminController {
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
-  @PostMapping("/get-attendance")
-  @PreAuthorize("hasRole('ADMIN')")
-  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
-  public ResponseEntity<?> getAttendanceForToday(@RequestBody DateRequestDTO dateRequestDTO) throws SystemException {
-    List<AttendanceDTO> attendanceDTOList = getAttendanceService.getAttendanceForToday(dateRequestDTO.getDate());
-    return ResponseEntity.status(HttpStatus.OK).body(attendanceDTOList);
-  }
 }
