@@ -31,41 +31,15 @@ public class GetAttendanceForEmployeeService {
       List<Long> employeeIdList = new ArrayList<>();
       if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
         attendanceDTOList.forEach(item -> {
-          if (!employeeIdList.contains(item.getEmployee().getEmployeeId())) {
+          if (!employeeIdList.contains(item.getPayroll().getEmployee().getEmployeeId())) {
             AttendanceDetailsForEmployeeDTO attendanceDetailsForEmployeeDTO = new AttendanceDetailsForEmployeeDTO();
-            attendanceDetailsForEmployeeDTO.setEmployeeId(item.getEmployee().getEmployeeId());
-            attendanceDetailsForEmployeeDTO.setFullname(item.getEmployee().getFullname());
+            attendanceDetailsForEmployeeDTO.setEmployeeId(item.getPayroll().getEmployee().getEmployeeId());
+            attendanceDetailsForEmployeeDTO.setFullname(item.getPayroll().getEmployee().getFullname());
             List<AttendanceDTO> attendanceDTOList1 = attendanceDTOList.stream().filter(item1 ->
-                    item1.getEmployee().getEmployeeId() == item.getEmployee().getEmployeeId()).collect(Collectors.toList());
+                    item1.getPayroll().getEmployee().getEmployeeId() == item.getPayroll().getEmployee().getEmployeeId()).collect(Collectors.toList());
             attendanceDetailsForEmployeeDTO.setAttendanceDTOList(attendanceDTOList1);
             attendanceDetailsForEmployeeDTOList.add(attendanceDetailsForEmployeeDTO);
-            employeeIdList.add(item.getEmployee().getEmployeeId());
-          }
-        });
-      }
-      return attendanceDetailsForEmployeeDTOList;
-    } catch (Exception e) {
-      logger.error("Error", e);
-      throw new SystemException();
-    }
-  }
-
-  public List<AttendanceDetailsForEmployeeDTO> getAttendanceForMonthYear(Integer month, Integer year) throws SystemException {
-    try {
-      List<AttendanceDTO> attendanceDTOList = attendanceService.getAttendanceForMonthYear(month, year);
-      List<AttendanceDetailsForEmployeeDTO> attendanceDetailsForEmployeeDTOList = new ArrayList<>();
-      List<Long> employeeIdList = new ArrayList<>();
-      if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
-        attendanceDTOList.forEach(item -> {
-          if (!employeeIdList.contains(item.getEmployee().getEmployeeId())) {
-            AttendanceDetailsForEmployeeDTO attendanceDetailsForEmployeeDTO = new AttendanceDetailsForEmployeeDTO();
-            attendanceDetailsForEmployeeDTO.setEmployeeId(item.getEmployee().getEmployeeId());
-            attendanceDetailsForEmployeeDTO.setFullname(item.getEmployee().getFullname());
-            List<AttendanceDTO> attendanceDTOList1 = attendanceDTOList.stream().filter(item1 ->
-                    item1.getEmployee().getEmployeeId() == item.getEmployee().getEmployeeId()).collect(Collectors.toList());
-            attendanceDetailsForEmployeeDTO.setAttendanceDTOList(attendanceDTOList1);
-            attendanceDetailsForEmployeeDTOList.add(attendanceDetailsForEmployeeDTO);
-            employeeIdList.add(item.getEmployee().getEmployeeId());
+              employeeIdList.add(item.getPayroll().getEmployee().getEmployeeId());
           }
         });
       }

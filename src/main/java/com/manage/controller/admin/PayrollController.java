@@ -2,12 +2,9 @@ package com.manage.controller.admin;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.manage.dto.EmployeePayrollDTO;
-import com.manage.dto.PayrollDTO;
-import com.manage.dto.UpdatePayrollInforDTO;
 import com.manage.jsonview.PayrollViews;
-import com.manage.services.bl.GetAllCurrentPayrollService;
 import com.manage.services.bl.GetPayrollForMonthYearService;
-import com.manage.services.bl.UpdatePayrollService;
+import com.manage.services.bl.UpdateBonusPayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,10 +26,7 @@ public class PayrollController {
   private GetPayrollForMonthYearService getPayrollForMonthYearService;
 
   @Autowired
-  private GetAllCurrentPayrollService getAllCurrentPayrollService;
-
-  @Autowired
-  private UpdatePayrollService updatePayrollService;
+  private UpdateBonusPayrollService updateBonusPayrollService;
 
   @GetMapping("/get-payroll/{month}/{year}")
   @JsonView({PayrollViews.PayrollViewForMonthYearSet.class})
@@ -45,18 +38,11 @@ public class PayrollController {
     return ResponseEntity.status(HttpStatus.OK).body(attendanceDetailsForEmployeeDTOList);
   }
 
-  @GetMapping("/get-all-payroll")
-  @JsonView({PayrollViews.PayrollViewForCurrentSet.class})
+  @PostMapping("/update-bonus/{payrollId}/{bonus}")
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<?> getAllCurrentPayroll() throws SystemException {
-    List<PayrollDTO> result = getAllCurrentPayrollService.getAllCurrentPayroll();
-    return ResponseEntity.status(HttpStatus.OK).body(result);
-  }
-
-  @PostMapping("/update-payroll")
-  @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<?> updatePayroll(@RequestBody UpdatePayrollInforDTO updatePayrollInforDTO) throws SystemException {
-    boolean result = updatePayrollService.updatePayroll(updatePayrollInforDTO);
+  public ResponseEntity<?> updateBonusPayroll(@PathVariable(value = "payrollId") Long payrollId,
+                                       @PathVariable(value = "bonus") Double bonus) throws SystemException {
+    boolean result = updateBonusPayrollService.updateBonusPayroll(payrollId, bonus);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 

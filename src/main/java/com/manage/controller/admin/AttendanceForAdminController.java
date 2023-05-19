@@ -1,15 +1,12 @@
 package com.manage.controller.admin;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.manage.dto.AttendanceDTO;
 import com.manage.dto.AttendanceDetailsForEmployeeDTO;
 import com.manage.dto.AttendanceForEmployeeRequestDTO;
-import com.manage.dto.DateRequestDTO;
 import com.manage.jsonview.AttendanceViews;
 import com.manage.services.bl.GetAttendanceForEmployeeService;
-import com.manage.services.bl.GetAttendanceService;
 import com.manage.services.bl.DownloadExcelForPayrollService;
-import com.manage.services.bl.UpdatePayrollStatusForAttendanceService;
+import com.manage.services.bl.UpdatePaymentStatusPayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -32,16 +29,13 @@ import java.util.Map;
 public class AttendanceForAdminController {
 
   @Autowired
-  private GetAttendanceService getAttendanceService;
-
-  @Autowired
   private GetAttendanceForEmployeeService getAttendanceForEmployeeService;
 
   @Autowired
   private DownloadExcelForPayrollService downloadExcelForPayrollService;
 
   @Autowired
-  private UpdatePayrollStatusForAttendanceService updatePayrollStatusForAttendanceService;
+  private UpdatePaymentStatusPayrollService updatePaymentStatusPayrollService;
 
   @PostMapping("/get-attendance-for-employee")
   @PreAuthorize("hasRole('ADMIN')")
@@ -80,12 +74,10 @@ public class AttendanceForAdminController {
             .body(resource);
   }
 
-  @PostMapping("/update-payroll-status/{employeeId}/{month}/{year}")
+  @PostMapping("/update-payroll-status/{payrollId}")
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<?> updatePayrollStatus(@PathVariable(value = "employeeId") Long employeeId,
-                                               @PathVariable(value = "month") Integer month,
-                                               @PathVariable(value = "year") Integer year) throws SystemException {
-    boolean result = updatePayrollStatusForAttendanceService.updatePayrollStatusForAttendance(employeeId, month, year);
+  public ResponseEntity<?> updatePayrollStatus(@PathVariable(value = "payrollId") Long payrollId) throws SystemException {
+    boolean result = updatePaymentStatusPayrollService.updatePaymentStatusPayroll(payrollId);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 

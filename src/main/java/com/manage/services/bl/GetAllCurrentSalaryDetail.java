@@ -1,7 +1,7 @@
 package com.manage.services.bl;
 
-import com.manage.dto.PayrollDTO;
-import com.manage.services.PayrollService;
+import com.manage.dto.SalaryDetailDTO;
+import com.manage.services.SalaryDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +13,19 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class GetAllCurrentPayrollService {
+public class GetAllCurrentSalaryDetail {
 
-  private static final Logger logger = LoggerFactory.getLogger(GetAllCurrentPayrollService.class);
+  private static final Logger logger = LoggerFactory.getLogger(GetAllCurrentSalaryDetail.class);
 
   @Autowired
-  private PayrollService payrollService;
+  private SalaryDetailService salaryDetailService;
 
-  public List<PayrollDTO> getAllCurrentPayroll() throws SystemException {
+  public List<SalaryDetailDTO> getAllCurrentSalaryDetail() throws SystemException {
     try {
       Date today = new Date();
       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
       String currentDay = formatter.format(today);
-      return payrollService.findAllCurrentPayroll(currentDay);
+      return salaryDetailService.findAllCurrentSalaryDetail(currentDay);
     } catch (Exception e) {
       logger.error("Error", e);
       throw new SystemException();

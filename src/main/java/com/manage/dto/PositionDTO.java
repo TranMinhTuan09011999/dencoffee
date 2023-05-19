@@ -2,8 +2,8 @@ package com.manage.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.manage.jsonview.EmployeeViews;
-import com.manage.jsonview.PayrollViews;
 import com.manage.jsonview.PositionViews;
+import com.manage.jsonview.SalaryDetailViews;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,17 +23,19 @@ public class PositionDTO extends AbstractNonAuditDTO implements java.io.Serializ
 
   @JsonView({EmployeeViews.EmployeeViewSet.class,
           PositionViews.PositionViewsSet.class,
-          PayrollViews.PayrollViewForCurrentSet.class})
+          SalaryDetailViews.currentSalaryDetailViewsSet.class})
   private Long positionId;
 
   @JsonView({EmployeeViews.EmployeeViewSet.class,
           PositionViews.PositionViewsSet.class,
-          PayrollViews.PayrollViewForCurrentSet.class})
+          SalaryDetailViews.currentSalaryDetailViewsSet.class})
   private String positionName;
 
-  private List<PayrollDTO> payrollList;
+  private List<SalaryDetailDTO> salaryDetailList;
 
   private List<EmployeeDTO> employeeList;
 
   private List<AttendanceDTO> attendanceList;
+
+  private List<PayrollDTO> payrollList;
 }

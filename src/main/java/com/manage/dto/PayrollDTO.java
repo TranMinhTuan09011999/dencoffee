@@ -1,13 +1,14 @@
 package com.manage.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.manage.jsonview.PayrollViews;
+import com.manage.jsonview.AttendanceViews;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.Date;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,34 +19,25 @@ public class PayrollDTO extends AbstractNonAuditDTO implements java.io.Serializa
 
   private static final long serialVersionUID = 1L;
 
-  @JsonView({PayrollViews.PayrollViewForCurrentSet.class})
   private Long payrollId;
 
-  @JsonView({PayrollViews.PayrollViewForCurrentSet.class})
-  private Double salary;
+  private Integer month;
 
-  @JsonView({PayrollViews.PayrollViewForCurrentSet.class})
-  private Double allowance;
+  private Integer year;
 
-  @JsonView({PayrollViews.PayrollViewForCurrentSet.class})
   private Double bonus;
 
-  private Date startDate;
+  private Integer paymentStatus;
 
-  private Date endDate;
+  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
+  private EmployeeDTO employee;
 
-  @JsonView({PayrollViews.PayrollViewForCurrentSet.class})
+  private SalaryDetailDTO salaryDetail;
+
+  private List<AttendanceDTO> attendanceList;
+
   private PositionDTO position;
 
-  public PayrollDTO(Object[] object) {
-    PositionDTO positionDTO = new PositionDTO();
-    positionDTO.setPositionId(object[0] != null ? Long.valueOf(object[0].toString()) : null);
-    positionDTO.setPositionName(object[1] != null ? object[1].toString() : null);
-    this.position = positionDTO;
-    this.payrollId = object[2] != null ? Long.valueOf(object[2].toString()) : null;
-    this.salary = object[3] != null ? Double.valueOf(object[3].toString()) : null;
-    this.allowance = object[4] != null ? Double.valueOf(object[4].toString()) : null;
-    this.bonus = object[5] != null ? Double.valueOf(object[5].toString()) : null;
-  }
+  private List<SalaryAdvanceDTO> salaryAdvanceList;
 
 }

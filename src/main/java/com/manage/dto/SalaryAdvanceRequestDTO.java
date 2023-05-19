@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class SalaryAdvanceRequestDTO {
-  private Long employeeId;
+  private Long payrollId;
   private Double salaryAdvanceAmount;
 }

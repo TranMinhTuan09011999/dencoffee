@@ -30,6 +30,6 @@ public class SalaryAdvanceDTO extends AbstractNonAuditDTO implements java.io.Ser
   @JsonSerialize(using = FormatDateSerializer.class)
   private Date salaryAdvanceDate;
 
-  private EmployeeDTO employee;
+  private PayrollDTO payroll;
 
 }

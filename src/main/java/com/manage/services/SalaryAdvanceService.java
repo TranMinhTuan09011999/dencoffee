@@ -6,6 +6,6 @@ import com.manage.model.SalaryAdvance;
 import java.util.List;
 
 public interface SalaryAdvanceService {
-  List<SalaryAdvanceDTO> getSalaryAdvanceByMonthAndEmployee(Integer month, Integer year, Long employeeId);
+  List<SalaryAdvanceDTO> getSalaryAdvanceByPayroll(Long payrollId);
   void save(SalaryAdvance salaryAdvance);
 }

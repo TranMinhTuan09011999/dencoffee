@@ -22,13 +22,6 @@ public class PayrollServiceImpl implements PayrollService {
   private PayrollMapper payrollMapper;
 
   @Override
-  public List<PayrollDTO> findAllCurrentPayroll(String currentDay) {
-    List<Object[]> payrollList = payrollRepository.findAllCurrentPayroll(currentDay);
-    List<PayrollDTO> payrollDTOList = payrollList.stream().map(e -> new PayrollDTO(e)).collect(Collectors.toList());
-    return payrollDTOList;
-  }
-
-  @Override
   public Payroll getPayrollByPayrollId(Long payrollId) {
     return payrollRepository.getOne(payrollId);
   }
@@ -38,8 +31,14 @@ public class PayrollServiceImpl implements PayrollService {
   }
 
   @Override
-  public List<PayrollDTO> getPayrollByPositionID(Long positionId) {
-    List<Payroll> payrollList = payrollRepository.findAllByPositionId(positionId);
+  public List<Payroll> getPayrollByMonthAndYearAndEmployeeId(Integer month, Integer year, Long employeeId) {
+    List<Payroll> payrollList = payrollRepository.getPayrollByMonthAndYearAndEmployeeId(month, year, employeeId);
+    return payrollList;
+  }
+
+  @Override
+  public List<PayrollDTO> getPayrollByMonthAndYear(Integer month, Integer year) {
+    List<Payroll> payrollList = payrollRepository.getPayrollByMonthAndYear(month, year);
     List<PayrollDTO> payrollDTOList = payrollList.stream().map(e -> payrollMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
     return payrollDTOList;
   }

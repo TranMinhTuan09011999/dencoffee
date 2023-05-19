@@ -4,8 +4,7 @@ import lombok.Data;
 
 @Data
 public class UpdatePayrollInforDTO {
-  private Long payrollId;
+  private Long salaryDetailId;
   private Double salary;
   private Double allowance;
-  private Double bonus;
 }

@@ -20,41 +20,33 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "employee")
-public class Employee extends AbstractAuditEntity implements java.io.Serializable {
+@Table(name = "salary_detail")
+public class SalaryDetail extends AbstractEntity implements java.io.Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "employee_id", nullable = false)
-  private Long employeeId;
+  @Column(name = "salary_detail_id", nullable = false)
+  private Long salaryDetailId;
 
-  @Column(name = "fullname")
-  private String fullname;
+  @Column(name = "salary")
+  private Double salary;
 
-  @Column(name = "birthday")
-  private Date birthday;
+  @Column(name = "allowance")
+  private Double allowance;
 
-  @Column(name = "gender")
-  private Integer gender;
+  @Column(name = "start_date")
+  private Date startDate;
 
-  @Column(name = "phone_number")
-  private String phoneNumber;
-
-  @Column(name = "address")
-  private String address;
-
-  @Column(name = "status")
-  private Integer status;
+  @Column(name = "end_date")
+  private Date endDate;
 
   @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinColumn(name = "position_id", nullable = false)
   private Position position;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employee")
-  private List<WorkHistory> workHistoryList;
-
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employee")
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "salaryDetail")
   private List<Payroll> payrollList;
+
 }

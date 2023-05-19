@@ -23,6 +23,11 @@ public class AttendanceServiceImpl implements AttendanceService {
   private AttendanceMapper attendanceMapper;
 
   @Override
+  public Attendance save(Attendance attendance) {
+    return attendanceRepository.save(attendance);
+  }
+
+  @Override
   public List<AttendanceDTO> getAttendanceForToday(Date date) {
     List<Attendance> attendanceList = attendanceRepository.getAttendanceByToday(date);
     List<AttendanceDTO> attendanceDTOList = attendanceList.stream().map(e -> attendanceMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
@@ -37,8 +42,8 @@ public class AttendanceServiceImpl implements AttendanceService {
   }
 
   @Override
-  public List<AttendanceDTO> getAttendanceForMonthYear(Integer month, Integer year) {
-    List<Attendance> attendanceList = attendanceRepository.getAttendanceForMonthYear(month, year);
+  public List<AttendanceDTO> getAttendanceForPayroll(Long payrollId) {
+    List<Attendance> attendanceList = attendanceRepository.getAttendanceForPayrollId(payrollId);
     List<AttendanceDTO> attendanceDTOList = attendanceList.stream().map(e -> attendanceMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
     return attendanceDTOList;
   }

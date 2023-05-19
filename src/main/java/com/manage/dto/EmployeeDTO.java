@@ -60,6 +60,8 @@ public class EmployeeDTO extends AbstractDTO implements java.io.Serializable {
   @JsonView({EmployeeViews.EmployeeViewSet.class})
   private PositionDTO position;
 
+  private List<PayrollDTO> payrollList;
+
   private List<WorkHistoryDTO> workHistoryList;
 
   private List<AttendanceDTO> attendanceDTOList;

@@ -29,19 +29,16 @@ public class SalaryAdvanceController {
   @PostMapping("/save-salary-advance")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> saveSalaryAdvance(@RequestBody SalaryAdvanceRequestDTO salaryAdvanceRequestDTO) throws SystemException {
-    Boolean result = advanceEmployeeSalaryService.advanceEmployeeSalary(salaryAdvanceRequestDTO.getEmployeeId(),
+    Boolean result = advanceEmployeeSalaryService.advanceEmployeeSalary(salaryAdvanceRequestDTO.getPayrollId(),
             salaryAdvanceRequestDTO.getSalaryAdvanceAmount());
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
-  @GetMapping("/get-salary-advance/{employeeId}/{month}/{year}")
+  @GetMapping("/get-salary-advance/{payrollId}")
   @JsonView({SalaryAdvanceViews.GetSalaryAdvanceViewsSet.class})
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<?> getSalaryAdvance(@PathVariable(value = "employeeId") Long employeeId,
-                                            @PathVariable(value = "month") Integer month,
-                                            @PathVariable(value = "year") Integer year) throws SystemException {
-    List<SalaryAdvanceDTO> result = advanceEmployeeSalaryService.getSalaryAdvanceByEmployee(month,
-            year, employeeId);
+  public ResponseEntity<?> getSalaryAdvance(@PathVariable(value = "payrollId") Long payrollId) throws SystemException {
+    List<SalaryAdvanceDTO> result = advanceEmployeeSalaryService.getSalaryAdvanceByPayroll(payrollId);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 

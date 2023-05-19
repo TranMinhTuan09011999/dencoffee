@@ -9,16 +9,20 @@ import java.util.List;
 
 public interface PayrollRepository extends JpaRepository<Payroll, Long> {
 
-  @Query(value = "SELECT p.position_id, p.position_name, pr.payroll_id, pr.salary, pr.allowance, pr.bonus FROM position p " +
-          "INNER JOIN payroll pr ON pr.position_id = p.position_id" +
-          " WHERE IF(pr.end_date IS NOT NULL, pr.start_date < :currentDay AND pr.end_date > :currentDay, pr.start_date < :currentDay)" +
-          " ORDER BY p.position_id ASC",
+  @Query(value = "SELECT p.* FROM payroll p"
+          + " WHERE p.month = :month"
+          + " AND p.year = :year"
+          + " AND p.employee_id = :employeeId",
           nativeQuery = true)
-  List<Object[]> findAllCurrentPayroll(@Param("currentDay") String currentDay);
+  List<Payroll> getPayrollByMonthAndYearAndEmployeeId(@Param("month") Integer month,
+                                                      @Param("year") Integer year,
+                                                      @Param("employeeId") Long employeeId);
 
-  @Query(value = "SELECT p.* FROM payroll p WHERE p.position_id = :positionId"
-          + " ORDER BY p.payroll_id DESC",
+  @Query(value = "SELECT p.* FROM payroll p"
+          + " WHERE p.month = :month"
+          + " AND p.year = :year",
           nativeQuery = true)
-  List<Payroll> findAllByPositionId(@Param("positionId") Long positionId);
+  List<Payroll> getPayrollByMonthAndYear(@Param("month") Integer month,
+                                                      @Param("year") Integer year);
 
 }

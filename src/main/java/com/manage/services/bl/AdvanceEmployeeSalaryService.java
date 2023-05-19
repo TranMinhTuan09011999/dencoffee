@@ -1,9 +1,9 @@
 package com.manage.services.bl;
 
 import com.manage.dto.SalaryAdvanceDTO;
-import com.manage.model.Employee;
+import com.manage.model.Payroll;
 import com.manage.model.SalaryAdvance;
-import com.manage.services.EmployeeService;
+import com.manage.services.PayrollService;
 import com.manage.services.SalaryAdvanceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,18 +20,18 @@ public class AdvanceEmployeeSalaryService {
   private static final Logger logger = LoggerFactory.getLogger(AdvanceEmployeeSalaryService.class);
 
   @Autowired
-  private EmployeeService employeeService;
+  private PayrollService payrollService;
 
   @Autowired
   private SalaryAdvanceService salaryAdvanceService;
 
-  public Boolean advanceEmployeeSalary(Long employeeId, Double salaryAdvanceAmount) throws SystemException {
+  public Boolean advanceEmployeeSalary(Long payrollId, Double salaryAdvanceAmount) throws SystemException {
     try {
       SalaryAdvance salaryAdvance = new SalaryAdvance();
       salaryAdvance.setSalaryAdvanceDate(new Date());
       salaryAdvance.setSalaryAdvanceAmount(salaryAdvanceAmount);
-      Employee employee = employeeService.getEmployeeById(employeeId);
-      salaryAdvance.setEmployee(employee);
+      Payroll payroll = payrollService.getPayrollByPayrollId(payrollId);
+      salaryAdvance.setPayroll(payroll);
       salaryAdvanceService.save(salaryAdvance);
       return true;
     } catch (Exception e) {
@@ -40,9 +40,9 @@ public class AdvanceEmployeeSalaryService {
     }
   }
 
-  public List<SalaryAdvanceDTO> getSalaryAdvanceByEmployee(Integer month, Integer year, Long employeeId) throws SystemException {
+  public List<SalaryAdvanceDTO> getSalaryAdvanceByPayroll(Long payrollId) throws SystemException {
     try {
-      return salaryAdvanceService.getSalaryAdvanceByMonthAndEmployee(month, year, employeeId);
+      return salaryAdvanceService.getSalaryAdvanceByPayroll(payrollId);
     } catch (Exception e) {
       logger.error("Error", e);
       throw new SystemException();

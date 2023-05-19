@@ -10,6 +10,9 @@ import java.util.List;
 public class EmployeePayrollDTO {
 
   @JsonView({PayrollViews.PayrollViewForMonthYearSet.class})
+  private Long payrollId;
+
+  @JsonView({PayrollViews.PayrollViewForMonthYearSet.class})
   private Long employeeId;
 
   @JsonView({PayrollViews.PayrollViewForMonthYearSet.class})

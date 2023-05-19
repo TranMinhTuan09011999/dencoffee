@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.SystemException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 @RestController
@@ -26,9 +30,10 @@ public class IpAddressController {
   private CheckIpAddressService checkIpAddressService;
 
   @GetMapping("/ip-address-attendance")
-  public ResponseEntity<?> getIpAddressForAttedance(HttpServletRequest request) throws SystemException, UnknownHostException {
+  public ResponseEntity<?> getIpAddressForAttedance(HttpServletRequest request) throws SystemException, UnknownHostException, SocketException {
     String remoteAddr = getIpAdressByHeader(request);
-    Boolean result = checkIpAddressService.checkIpAddress(remoteAddr);
+    String macAddress = getClientMACAddress(remoteAddr);
+    Boolean result = checkIpAddressService.checkIpAddress(macAddress);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
@@ -57,5 +62,28 @@ public class IpAddressController {
       logger.info("getIpAdressByHeader - END");
       return ip;
     }
+  }
+
+  public String getClientMACAddress(String clientIp){
+    String str = "";
+    String macAddress = "";
+    try {
+      Process p = Runtime.getRuntime().exec("nbtstat -A " + clientIp);
+      InputStreamReader ir = new InputStreamReader(p.getInputStream());
+      LineNumberReader input = new LineNumberReader(ir);
+      for (int i = 1; i <100; i++) {
+        str = input.readLine();
+        if (str != null) {
+          if (str.indexOf("MAC Address") > 1) {
+            macAddress = str.substring(str.indexOf("MAC Address") + 14, str.length());
+            break;
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace(System.out);
+    }
+    logger.info("MAC-ADDRESS: " + macAddress);
+    return macAddress;
   }
 }

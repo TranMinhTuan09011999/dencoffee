@@ -22,8 +22,8 @@ public class SalaryAdvanceServiceImpl implements SalaryAdvanceService {
   private SalaryAdvanceMapper salaryAdvanceMapper;
 
   @Override
-  public List<SalaryAdvanceDTO> getSalaryAdvanceByMonthAndEmployee(Integer month, Integer year, Long employeeId) {
-    List<SalaryAdvance> salaryAdvanceList = salaryAdvanceRepository.getSalaryAdvanceByMonthAndEmployee(month, year, employeeId);
+  public List<SalaryAdvanceDTO> getSalaryAdvanceByPayroll(Long payrollId) {
+    List<SalaryAdvance> salaryAdvanceList = salaryAdvanceRepository.getSalaryAdvanceByPayroll(payrollId);
     List<SalaryAdvanceDTO> salaryAdvanceDTOList = salaryAdvanceList.stream().map(e -> salaryAdvanceMapper.toDto(e, new CycleAvoidingMappingContext())).collect(Collectors.toList());
     return salaryAdvanceDTOList;
   }

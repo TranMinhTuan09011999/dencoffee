@@ -28,21 +28,17 @@ public class Attendance extends AbstractEntity implements java.io.Serializable {
   @Column(name = "attendance_id", nullable = false)
   private Long attendanceId;
 
+  @Column(name = "actual_start_date_time")
+  private Date actualStartDateTime;
+
   @Column(name = "start_date_time")
   private Date startDateTime;
 
   @Column(name = "end_date_time")
   private Date endDateTime;
 
-  @Column(name = "payroll_status")
-  private Integer payrollStatus;
-
-  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-  @JoinColumn(name = "position_id", nullable = false)
-  private Position position;
-
-  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-  @JoinColumn(name = "employee_id", nullable = false)
-  private Employee employee;
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @JoinColumn(name = "payroll_id", nullable = false)
+  private Payroll payroll;
 
 }

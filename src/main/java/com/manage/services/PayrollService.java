@@ -6,8 +6,8 @@ import com.manage.model.Payroll;
 import java.util.List;
 
 public interface PayrollService {
-  List<PayrollDTO> findAllCurrentPayroll(String currentDay);
   Payroll getPayrollByPayrollId(Long payrollId);
   Payroll save(Payroll payroll);
-  List<PayrollDTO> getPayrollByPositionID(Long positionId);
+  List<Payroll> getPayrollByMonthAndYearAndEmployeeId(Integer month, Integer year, Long employeeId);
+  List<PayrollDTO> getPayrollByMonthAndYear(Integer month, Integer year);
 }

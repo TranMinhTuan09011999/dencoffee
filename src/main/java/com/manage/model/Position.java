@@ -29,12 +29,12 @@ public class Position extends AbstractEntity implements java.io.Serializable {
   private String positionName;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "position")
-  private List<Payroll> payrollList;
+  private List<SalaryDetail> salaryDetailList;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "position")
   private List<Employee> employeeList;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "position")
-  private List<Attendance> attendanceList;
+  private List<Payroll> payrollList;
 
 }

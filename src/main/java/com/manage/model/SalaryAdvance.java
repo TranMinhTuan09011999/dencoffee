@@ -35,7 +35,7 @@ public class SalaryAdvance extends AbstractEntity implements java.io.Serializabl
   private Date salaryAdvanceDate;
 
   @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-  @JoinColumn(name = "employee_id", nullable = false)
-  private Employee employee;
+  @JoinColumn(name = "payroll_id", nullable = false)
+  private Payroll payroll;
 
 }
