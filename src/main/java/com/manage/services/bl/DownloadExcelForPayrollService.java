@@ -206,7 +206,7 @@ public class DownloadExcelForPayrollService {
           hourTotalOfDay = getHourTotalOfDay(attendanceDTOList);
         }
         IndexedColors colorForDay = null;
-        if (checkDelay(j + 1, attendanceDetailsForEmployeeDTOList.get(i).getAttendanceDTOList())) {
+        if (checkDelay(attendanceDTOList)) {
           colorForDay = IndexedColors.GREY_25_PERCENT;
         }
         CellStyle styleForCellForDay = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN, null, null, colorForDay, FillPatternType.SOLID_FOREGROUND, null);
@@ -382,7 +382,7 @@ public class DownloadExcelForPayrollService {
     return null;
   }
 
-  private boolean checkDelay(Integer day, List<AttendanceDTO> attendanceDTOList) {
+  private boolean checkDelay(List<AttendanceDTO> attendanceDTOList) {
     if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
       for (int i=0; i<attendanceDTOList.size(); i++) {
         if (attendanceDTOList.get(i).getActualStartDateTime().getMinutes() > 0

@@ -14,10 +14,10 @@ import javax.transaction.SystemException;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+import java.util.TimeZone;
 
 @Service
 public class UpdateSalaryDetailService {
@@ -39,16 +39,18 @@ public class UpdateSalaryDetailService {
                 && salaryDetail.getAllowance() == updatePayrollInforDTO.getAllowance()) {
           return true;
         }
-        Date today = new Date();
-        DateTimeFormatter formatterForMonthYear = DateTimeFormatter.ofPattern("MM-yyyy");
-        SimpleDateFormat formatter = new SimpleDateFormat("MM-yyyy");
-        YearMonth monthYearToday = YearMonth.parse(formatter.format(today), formatterForMonthYear);
-        YearMonth monthYearStartDate = YearMonth.parse(formatter.format(salaryDetail.getStartDate()), formatterForMonthYear);
-        if (monthYearToday.compareTo(monthYearStartDate) == 0) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        format.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        String startDateStr = format.format(salaryDetail.getStartDate());
+        String[] dates = startDateStr.split("-");
+        YearMonth currentYearMonth = YearMonth.now();
+        YearMonth targetYearMonth = YearMonth.of(Integer.valueOf(dates[0]), Integer.valueOf(dates[1]));
+        int comparisonResult = currentYearMonth.compareTo(targetYearMonth);
+        if (comparisonResult == 0) {
           salaryDetail.setSalary(updatePayrollInforDTO.getSalary());
           salaryDetail.setAllowance(updatePayrollInforDTO.getAllowance());
           salaryDetailService.save(salaryDetail);
-        } else if (monthYearToday.compareTo(monthYearStartDate) > 0) {
+        } else if (comparisonResult > 0){
           Calendar cal = Calendar.getInstance();
           cal.set(Calendar.DAY_OF_MONTH, 1);
           cal.add(Calendar.DATE, -1);
