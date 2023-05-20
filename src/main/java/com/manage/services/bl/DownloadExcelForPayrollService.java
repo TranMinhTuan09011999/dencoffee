@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class DownloadExcelForPayrollService {
@@ -199,8 +200,17 @@ public class DownloadExcelForPayrollService {
       mergeCell(sheet, 7 + i, 7 + i, 1, 3, attendanceDetailsForEmployeeDTOList.get(i).getFullname(), cellStyleForName);
       CellStyle styleForCell = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN, null, null, null, null, null);
       for (int j = 0; j < daysInMonth; j++) {
-        double hourTotalOfDay = getHourTotalOfDay(j + 1, attendanceDetailsForEmployeeDTOList.get(i).getAttendanceDTOList());
-        createCell(row, sheet, 4+j, getDoubleValue(hourTotalOfDay), styleForCell, 0);
+        double hourTotalOfDay = 0.0;
+        List<AttendanceDTO> attendanceDTOList = getAttendanceForDay(j+1, attendanceDetailsForEmployeeDTOList.get(i).getAttendanceDTOList());
+        if (attendanceDTOList != null && attendanceDTOList.size() > 0) {
+          hourTotalOfDay = getHourTotalOfDay(attendanceDTOList);
+        }
+        IndexedColors colorForDay = null;
+        if (checkDelay(j + 1, attendanceDetailsForEmployeeDTOList.get(i).getAttendanceDTOList())) {
+          colorForDay = IndexedColors.GREY_25_PERCENT;
+        }
+        CellStyle styleForCellForDay = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN, null, null, colorForDay, FillPatternType.SOLID_FOREGROUND, null);
+        createCell(row, sheet, 4+j, getDoubleValue(hourTotalOfDay), styleForCellForDay, 0);
       }
       createCell(row, sheet, 4 + daysInMonth, getDoubleValue(attendanceDetailsForEmployeeDTOList.get(i).getHourTotal()), styleForCell, 12);
       createCell(row, sheet, 4 + daysInMonth + 1, addCommaForSalary(attendanceDetailsForEmployeeDTOList.get(i).getHourSalary()), styleForCell, 15);
@@ -216,17 +226,33 @@ public class DownloadExcelForPayrollService {
         createCell(row, sheet, 4 + daysInMonth + 8, "CHƯA THANH TOÁN", styleForCell, 19);
       }
     }
+    Row row = sheet.createRow(7 + attendanceDetailsForEmployeeDTOList.size());
+    CellStyle styleForCell = null;
+    for (int i = 0; i < daysInMonth; i++) {
+      BorderStyle borderLeft = null;
+      if (i == 0) {
+        borderLeft = BorderStyle.THIN;
+      }
+      styleForCell = setCssForCell(workbook, HorizontalAlignment.CENTER, BorderStyle.THIN, BorderStyle.THIN, null, borderLeft, null, null, null);
+      double total = 0.0;
+      for (int j = 0; j < attendanceDetailsForEmployeeDTOList.size(); j++) {
+        List<AttendanceDTO> attendanceDTOList = getAttendanceForDay(i+1, attendanceDetailsForEmployeeDTOList.get(j).getAttendanceDTOList());
+        total += getHourTotalOfDay(attendanceDTOList);
+      }
+      createCell(row, sheet, 4+i, getDoubleValue(total), styleForCell, 0);
+    }
 
     setNote(workbook, sheet, attendanceDetailsForEmployeeDTOList.size() + 9);
   }
 
-  private double getHourTotalOfDay(Integer day, List<AttendanceDTO> attendanceDTOList) {
+  private double getHourTotalOfDay(List<AttendanceDTO> attendanceDTOList) {
+    double result = 0.0;
     if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
-      double hourTotal = attendanceDTOList.stream().filter(item -> item.getStartDateTime().getDate() == day)
-              .mapToDouble(item -> getHourTotalBetween2Time(item.getStartDateTime(), item.getEndDateTime())).sum();
-      return hourTotal;
+      for (int i=0; i<attendanceDTOList.size(); i++) {
+        result += getHourTotalBetween2Time(attendanceDTOList.get(i).getStartDateTime(), attendanceDTOList.get(i).getEndDateTime());
+      }
     }
-    return 0;
+    return result;
   }
 
   private double getHourTotalBetween2Time(Date startDateTime, Date endDateTime) {
@@ -347,5 +373,24 @@ public class DownloadExcelForPayrollService {
             BorderStyle.THIN, BorderStyle.THIN, IndexedColors.RED, FillPatternType.SOLID_FOREGROUND, null);
     createCell(row5, sheet, 1, "CHỦ NHẬT", cellStyle, 12);
     createCell(row5, sheet, 2, null, cellStyle5, 0);
+  }
+
+  private List<AttendanceDTO> getAttendanceForDay(Integer day, List<AttendanceDTO> attendanceDTOList) {
+    if (attendanceDTOList != null && attendanceDTOList.size() > 0) {
+      return attendanceDTOList.stream().filter(item -> item.getStartDateTime().getDate() == day).collect(Collectors.toList());
+    }
+    return null;
+  }
+
+  private boolean checkDelay(Integer day, List<AttendanceDTO> attendanceDTOList) {
+    if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
+      for (int i=0; i<attendanceDTOList.size(); i++) {
+        if (attendanceDTOList.get(i).getActualStartDateTime().getMinutes() > 0
+                && attendanceDTOList.get(i).getActualStartDateTime().getMinutes() < 10) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

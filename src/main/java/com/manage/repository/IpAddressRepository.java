@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IpAddressRepository extends JpaRepository<IpAddress, Long> {
 
-  @Query(value = "SELECT i.* FROM ip_address i WHERE i.status = 1"
+  @Query(value = "SELECT i.* FROM ip_address i"
           + " ORDER BY i.ip_address_id ASC",
           nativeQuery = true)
   List<IpAddress> findAllByStatus();

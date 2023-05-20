@@ -20,11 +20,10 @@ public class UpdateIpAddressService {
   private IpAddressRepository ipAddressRepository;
 
   @Transactional
-  public Boolean updateIpAddressStatus(IpAddressDTO ipAddressDTO) throws SystemException {
+  public Boolean deleteIpAddress(IpAddressDTO ipAddressDTO) throws SystemException {
     try {
       IpAddress ipAddress = ipAddressRepository.getOne(ipAddressDTO.getIpAddressId());
-      ipAddress.setStatus(ipAddressDTO.getStatus());
-      ipAddressRepository.save(ipAddress);
+      ipAddressRepository.delete(ipAddress);
       return true;
     } catch (Exception e) {
       logger.error("Error", e);
@@ -37,6 +36,7 @@ public class UpdateIpAddressService {
     try {
       IpAddress ipAddress = ipAddressRepository.getOne(ipAddressDTO.getIpAddressId());
       ipAddress.setIpAddress(ipAddressDTO.getIpAddress());
+      ipAddress.setLocation(ipAddressDTO.getLocation());
       ipAddressRepository.save(ipAddress);
       return true;
     } catch (Exception e) {

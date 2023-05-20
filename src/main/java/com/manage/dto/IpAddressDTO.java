@@ -19,6 +19,6 @@ public class IpAddressDTO implements java.io.Serializable {
 
   private String ipAddress;
 
-  private Integer status;
+  private String location;
 
 }

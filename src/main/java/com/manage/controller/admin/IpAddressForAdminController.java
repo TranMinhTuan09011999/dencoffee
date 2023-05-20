@@ -40,7 +40,7 @@ public class IpAddressForAdminController {
   @PostMapping("/register-ip-address")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> registerIpAddress(@RequestBody IpAddressRequestDTO ipAddressRequestDTO) throws SystemException {
-    Boolean result = registerIpAddressService.registerIpAddress(ipAddressRequestDTO.getIpAddress());
+    Boolean result = registerIpAddressService.registerIpAddress(ipAddressRequestDTO.getIpAddress(), ipAddressRequestDTO.getLocation());
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
@@ -61,7 +61,7 @@ public class IpAddressForAdminController {
   @PostMapping("/delete-ip-address")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> deleteIpAddress(@RequestBody IpAddressDTO ipAddressDTO) throws SystemException {
-    Boolean result = updateIpAddressService.updateIpAddressStatus(ipAddressDTO);
+    Boolean result = updateIpAddressService.deleteIpAddress(ipAddressDTO);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 

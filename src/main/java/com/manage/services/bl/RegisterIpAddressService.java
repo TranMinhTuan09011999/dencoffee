@@ -18,9 +18,9 @@ public class RegisterIpAddressService {
   private IpAddressRepository ipAddressRepository;
 
   @Transactional
-  public Boolean registerIpAddress(String ipAddress) throws SystemException {
+  public Boolean registerIpAddress(String ipAddress, String location) throws SystemException {
     try {
-      saveIpAddress(ipAddress);
+      saveIpAddress(ipAddress, location);
       return true;
     } catch (Exception e) {
       logger.error("Error", e);
@@ -28,10 +28,10 @@ public class RegisterIpAddressService {
     }
   }
 
-  private void saveIpAddress(String ipAddess) {
+  private void saveIpAddress(String ipAddess, String location) {
     IpAddress ipAddress = new IpAddress();
     ipAddress.setIpAddress(ipAddess);
-    ipAddress.setStatus(1);
+    ipAddress.setLocation(location);
     ipAddressRepository.save(ipAddress);
   }
 
