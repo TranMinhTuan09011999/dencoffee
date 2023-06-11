@@ -39,6 +39,7 @@ dependencies {
     implementation 'log4j:log4j:1.2.16'
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
     implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
+    implementation 'com.google.guava:guava:30.1-jre'
 
 }
 

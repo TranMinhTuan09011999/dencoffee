@@ -7,6 +7,7 @@ import com.manage.services.bl.GetEmployeeNameListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +20,15 @@ import java.util.List;
 @RequestMapping("/api/user/employee")
 public class EmployeeForUserController {
 
-  @Autowired
-  private GetEmployeeNameListService getEmployeeNameListService;
+    @Autowired
+    private GetEmployeeNameListService getEmployeeNameListService;
 
-  @GetMapping("/employee-name/{status}")
-  @JsonView({EmployeeViews.EmployeeNameViewSet.class})
-  public ResponseEntity<?> getAllEmployeeName(@PathVariable(value = "status") Integer status) throws SystemException {
-    List<EmployeeDTO> customerDTOList = getEmployeeNameListService.getEmployeeNameList(status);
-    return ResponseEntity.status(HttpStatus.OK).body(customerDTOList);
-  }
+    @GetMapping("/employee-name/{status}")
+    @PreAuthorize("hasRole('USER')")
+    @JsonView({EmployeeViews.EmployeeNameViewSet.class})
+    public ResponseEntity<?> getAllEmployeeName(@PathVariable(value = "status") Integer status) throws SystemException {
+        List<EmployeeDTO> customerDTOList = getEmployeeNameListService.getEmployeeNameList(status);
+        return ResponseEntity.status(HttpStatus.OK).body(customerDTOList);
+    }
 
 }
