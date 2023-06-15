@@ -12,19 +12,19 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
   @Query(value = "SELECT a.* FROM attendance a WHERE " +
           "DATE_FORMAT(a.start_date_time,'%Y-%m-%d') = DATE_FORMAT(:today,'%Y-%m-%d')"
-          + " ORDER BY a.attendance_id ASC",
+          + " ORDER BY a.start_date_time ASC",
           nativeQuery = true)
   List<Attendance> getAttendanceByToday(@Param("today") Date today);
 
   @Query(value = "SELECT a.* FROM attendance a " +
           "WHERE a.start_date_time >= :dateFrom AND a.start_date_time <= :dateTo"
-          + " ORDER BY a.attendance_id ASC",
+          + " ORDER BY a.start_date_time ASC",
           nativeQuery = true)
   List<Attendance> getAttendanceForEmployee(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo);
 
   @Query(value = "SELECT a.* FROM attendance a " +
           "WHERE a.payroll_id = :payrollId"
-          + " ORDER BY a.attendance_id ASC",
+          + " ORDER BY a.start_date_time ASC",
           nativeQuery = true)
   List<Attendance> getAttendanceForPayrollId(@Param("payrollId") Long payrollId);
 }

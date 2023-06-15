@@ -35,7 +35,7 @@ public class AttendanceForUserController {
     private UpdateAttendanceService updateAttendanceService;
 
     @PostMapping("/save-attendance")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') || hasRole('ADMIN')")
     public ResponseEntity<?> registerEmployee(@RequestBody AttendaceSaveRequestDTO attendaceSaveRequestDTO) throws SystemException {
         Boolean result = saveAttendanceService.saveAttendance(attendaceSaveRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);

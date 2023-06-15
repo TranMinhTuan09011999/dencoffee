@@ -71,7 +71,7 @@ public class SaveAttendanceService {
       Attendance attendance = new Attendance();
       attendance.setActualStartDateTime(attendaceSaveRequestDTO.getActualStartDateTime());
       attendance.setStartDateTime(attendaceSaveRequestDTO.getStartDateTime());
-      attendance.setEndDateTime(null);
+      attendance.setEndDateTime(attendaceSaveRequestDTO.getEndDateTime());
       attendance.setPayroll(payrollSave);
       attendanceService.save(attendance);
       return true;

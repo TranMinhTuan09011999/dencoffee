@@ -24,7 +24,7 @@ public class EmployeeForUserController {
     private GetEmployeeNameListService getEmployeeNameListService;
 
     @GetMapping("/employee-name/{status}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') || hasRole('ADMIN')")
     @JsonView({EmployeeViews.EmployeeNameViewSet.class})
     public ResponseEntity<?> getAllEmployeeName(@PathVariable(value = "status") Integer status) throws SystemException {
         List<EmployeeDTO> customerDTOList = getEmployeeNameListService.getEmployeeNameList(status);
