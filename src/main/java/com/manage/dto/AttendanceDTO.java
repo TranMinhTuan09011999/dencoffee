@@ -22,7 +22,8 @@ public class AttendanceDTO extends AbstractNonAuditDTO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class})
+  @JsonView({AttendanceViews.AttendanceForTodayViewSet.class,
+          AttendanceViews.AttendanceDetailsForEmployeeViewSet.class})
   private Long attendanceId;
 
   @JsonView({AttendanceViews.AttendanceForTodayViewSet.class,

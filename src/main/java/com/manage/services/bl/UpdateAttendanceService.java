@@ -1,6 +1,7 @@
 package com.manage.services.bl;
 
 import com.manage.dto.AttendanceEndDateTimeUpdateDTO;
+import com.manage.dto.AttendanceUpdateDTO;
 import com.manage.model.Attendance;
 import com.manage.repository.AttendanceRepository;
 import org.slf4j.Logger;
@@ -34,6 +35,21 @@ public class UpdateAttendanceService {
     Attendance attendance = attendanceRepository.getOne(attendanceEndDateTimeUpdateDTO.getAttendanceId());
     attendance.setEndDateTime(attendanceEndDateTimeUpdateDTO.getEndDateTime());
     attendanceRepository.save(attendance);
+  }
+
+  @Transactional
+  public Boolean updateAttendance(AttendanceUpdateDTO attendanceUpdateDTO) throws SystemException {
+   try {
+     Attendance attendance = attendanceRepository.getOne(attendanceUpdateDTO.getAttendanceId());
+     attendance.setStartDateTime(attendanceUpdateDTO.getStartDateTime());
+     attendance.setActualStartDateTime(attendanceUpdateDTO.getActualStartDateTime());
+     attendance.setEndDateTime(attendanceUpdateDTO.getEndDateTime());
+     attendanceRepository.save(attendance);
+     return true;
+   } catch (Exception e) {
+     logger.error("Error", e);
+     throw new SystemException();
+   }
   }
 
 }

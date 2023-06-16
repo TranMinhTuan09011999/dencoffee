@@ -3,9 +3,11 @@ package com.manage.controller.admin;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.manage.dto.AttendanceDetailsForEmployeeDTO;
 import com.manage.dto.AttendanceForEmployeeRequestDTO;
+import com.manage.dto.AttendanceUpdateDTO;
 import com.manage.jsonview.AttendanceViews;
 import com.manage.services.bl.GetAttendanceForEmployeeService;
 import com.manage.services.bl.DownloadExcelForPayrollService;
+import com.manage.services.bl.UpdateAttendanceService;
 import com.manage.services.bl.UpdatePaymentStatusPayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -36,6 +38,9 @@ public class AttendanceForAdminController {
 
   @Autowired
   private UpdatePaymentStatusPayrollService updatePaymentStatusPayrollService;
+
+  @Autowired
+  private UpdateAttendanceService updateAttendanceService;
 
   @PostMapping("/get-attendance-for-employee")
   @PreAuthorize("hasRole('ADMIN')")
@@ -78,6 +83,13 @@ public class AttendanceForAdminController {
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> updatePayrollStatus(@PathVariable(value = "payrollId") Long payrollId) throws SystemException {
     boolean result = updatePaymentStatusPayrollService.updatePaymentStatusPayroll(payrollId);
+    return ResponseEntity.status(HttpStatus.OK).body(result);
+  }
+
+  @PostMapping("/update-attendance")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> updateAttendance(@RequestBody AttendanceUpdateDTO attendanceUpdateDTO) throws SystemException {
+    boolean result = updateAttendanceService.updateAttendance(attendanceUpdateDTO);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
