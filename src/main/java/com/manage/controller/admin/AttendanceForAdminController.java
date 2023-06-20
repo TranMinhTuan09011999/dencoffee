@@ -5,6 +5,7 @@ import com.manage.dto.AttendanceDetailsForEmployeeDTO;
 import com.manage.dto.AttendanceForEmployeeRequestDTO;
 import com.manage.dto.AttendanceUpdateDTO;
 import com.manage.jsonview.AttendanceViews;
+import com.manage.services.bl.DeleteAttendanceService;
 import com.manage.services.bl.GetAttendanceForEmployeeService;
 import com.manage.services.bl.DownloadExcelForPayrollService;
 import com.manage.services.bl.UpdateAttendanceService;
@@ -41,6 +42,9 @@ public class AttendanceForAdminController {
 
   @Autowired
   private UpdateAttendanceService updateAttendanceService;
+
+  @Autowired
+  private DeleteAttendanceService deleteAttendanceService;
 
   @PostMapping("/get-attendance-for-employee")
   @PreAuthorize("hasRole('ADMIN')")
@@ -90,6 +94,13 @@ public class AttendanceForAdminController {
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> updateAttendance(@RequestBody AttendanceUpdateDTO attendanceUpdateDTO) throws SystemException {
     boolean result = updateAttendanceService.updateAttendance(attendanceUpdateDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(result);
+  }
+
+  @PostMapping("/delete-attendance/{attendanceId}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> deleteAttendance(@PathVariable(value = "attendanceId") Long attendanceId) throws SystemException {
+    boolean result = deleteAttendanceService.deleteAttendance(attendanceId);
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 
