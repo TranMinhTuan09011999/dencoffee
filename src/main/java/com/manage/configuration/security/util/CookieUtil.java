@@ -14,7 +14,6 @@ public class CookieUtil {
         String encryptedToken = SecurityCipher.encrypt(token);
         return ResponseCookie.from(accessTokenCookieName, encryptedToken)
                 .maxAge(-1)
-                .httpOnly(true)
                 .path("/")
                 .build();
     }
