@@ -10,4 +10,5 @@ public interface PayrollService {
   Payroll save(Payroll payroll);
   List<Payroll> getPayrollByMonthAndYearAndEmployeeId(Integer month, Integer year, Long employeeId);
   List<PayrollDTO> getPayrollByMonthAndYear(Integer month, Integer year);
+  List<Payroll> getPayrollByMonthAndYearAndPositionId(Integer month, Integer year, Long positionId);
 }

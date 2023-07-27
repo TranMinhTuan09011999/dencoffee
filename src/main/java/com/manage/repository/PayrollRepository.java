@@ -25,4 +25,12 @@ public interface PayrollRepository extends JpaRepository<Payroll, Long> {
   List<Payroll> getPayrollByMonthAndYear(@Param("month") Integer month,
                                                       @Param("year") Integer year);
 
+  @Query(value = "SELECT p.* FROM payroll p"
+          + " WHERE p.month = :month"
+          + " AND p.year = :year"
+          + " AND p.position_id = :positionId",
+          nativeQuery = true)
+  List<Payroll> getPayrollByMonthAndYearAndPositionId(@Param("month") Integer month,
+                                         @Param("year") Integer year, @Param("positionId") Long positionId);
+
 }

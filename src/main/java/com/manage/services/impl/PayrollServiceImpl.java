@@ -43,4 +43,10 @@ public class PayrollServiceImpl implements PayrollService {
     return payrollDTOList;
   }
 
+  @Override
+  public List<Payroll> getPayrollByMonthAndYearAndPositionId(Integer month, Integer year, Long positionId) {
+    List<Payroll> payrollList = payrollRepository.getPayrollByMonthAndYearAndPositionId(month, year, positionId);
+    return payrollList;
+  }
+
 }

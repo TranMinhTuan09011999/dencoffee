@@ -1,8 +1,10 @@
 package com.manage.services.bl;
 
 import com.manage.dto.UpdatePayrollInforDTO;
+import com.manage.model.Payroll;
 import com.manage.model.Position;
 import com.manage.model.SalaryDetail;
+import com.manage.services.PayrollService;
 import com.manage.services.PositionService;
 import com.manage.services.SalaryDetailService;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -29,6 +32,9 @@ public class UpdateSalaryDetailService {
 
   @Autowired
   private PositionService positionService;
+
+  @Autowired
+  private PayrollService payrollService;
 
   @Transactional
   public boolean updateSalaryDetail(UpdatePayrollInforDTO updatePayrollInforDTO) throws SystemException {
@@ -67,13 +73,26 @@ public class UpdateSalaryDetailService {
           newSalaryDetail.setAllowance(updatePayrollInforDTO.getAllowance());
           Position position = positionService.getPositionById(salaryDetail.getPosition().getPositionId());
           newSalaryDetail.setPosition(position);
-          salaryDetailService.save(newSalaryDetail);
+          SalaryDetail newSalaryDetailForPosition = salaryDetailService.save(newSalaryDetail);
+
+          updatePayrollForEmployee(currentYearMonth.getMonthValue(), currentYearMonth.getYear(),
+                  salaryDetail.getPosition().getPositionId(), newSalaryDetailForPosition);
         }
       }
       return true;
     } catch (Exception e) {
       logger.error("Error", e);
       throw new SystemException();
+    }
+  }
+
+  private void updatePayrollForEmployee(int month, int year, Long positionId, SalaryDetail salaryDetail) {
+    List<Payroll> payrollList = payrollService.getPayrollByMonthAndYearAndPositionId(month, year, positionId);
+    if (Objects.nonNull(payrollList) && !payrollList.isEmpty()) {
+      payrollList.forEach(item -> {
+        item.setSalaryDetail(salaryDetail);
+        payrollService.save(item);
+      });
     }
   }
 
