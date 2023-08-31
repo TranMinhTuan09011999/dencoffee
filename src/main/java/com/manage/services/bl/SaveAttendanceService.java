@@ -3,11 +3,13 @@ package com.manage.services.bl;
 import com.manage.dto.AttendaceSaveRequestDTO;
 import com.manage.model.Attendance;
 import com.manage.model.Employee;
+import com.manage.model.EmployeeShift;
 import com.manage.model.Payroll;
 import com.manage.model.Position;
 import com.manage.model.SalaryDetail;
 import com.manage.repository.EmployeeRepository;
 import com.manage.services.AttendanceService;
+import com.manage.services.EmployeeShiftService;
 import com.manage.services.PayrollService;
 import com.manage.services.PositionService;
 import com.manage.services.SalaryDetailService;
@@ -42,8 +44,12 @@ public class SaveAttendanceService {
   @Autowired
   private PositionService positionService;
 
+  @Autowired
+  private EmployeeShiftService employeeShiftService;
+
   @Transactional
   public Boolean saveAttendance(AttendaceSaveRequestDTO attendaceSaveRequestDTO) throws SystemException {
+    logger.debug("SaveAttendance ----> Param: ", attendaceSaveRequestDTO.toString());
     try {
       int month = attendaceSaveRequestDTO.getStartDateTime().getMonth() + 1;
       int year = attendaceSaveRequestDTO.getStartDateTime().getYear() + 1900;
@@ -69,14 +75,18 @@ public class SaveAttendanceService {
         payrollSave = payrollList.get(0);
       }
       Attendance attendance = new Attendance();
-      attendance.setActualStartDateTime(attendaceSaveRequestDTO.getActualStartDateTime());
       attendance.setStartDateTime(attendaceSaveRequestDTO.getStartDateTime());
       attendance.setEndDateTime(attendaceSaveRequestDTO.getEndDateTime());
       attendance.setPayroll(payrollSave);
+      if (attendaceSaveRequestDTO.getEmployeeShiftId() != null) {
+        EmployeeShift employeeShift= employeeShiftService.getEmployeeShiftById(attendaceSaveRequestDTO.getEmployeeShiftId());
+        attendance.setEmployeeShift(employeeShift);
+      }
       attendanceService.save(attendance);
+      logger.debug("SaveAttendance ----> End: ", true);
       return true;
     } catch (Exception e) {
-      logger.error("Error", e);
+      logger.error("SaveAttendance ----> Error: ", e);
       throw new SystemException();
     }
   }

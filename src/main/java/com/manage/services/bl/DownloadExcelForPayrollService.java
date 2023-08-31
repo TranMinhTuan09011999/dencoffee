@@ -383,14 +383,14 @@ public class DownloadExcelForPayrollService {
   }
 
   private boolean checkDelay(List<AttendanceDTO> attendanceDTOList) {
-    if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
-      for (int i=0; i<attendanceDTOList.size(); i++) {
-        if (attendanceDTOList.get(i).getActualStartDateTime().getMinutes() > 0
-                && attendanceDTOList.get(i).getActualStartDateTime().getMinutes() < 10) {
-          return true;
-        }
-      }
-    }
+//    if (Objects.nonNull(attendanceDTOList) && !attendanceDTOList.isEmpty()) {
+//      for (int i=0; i<attendanceDTOList.size(); i++) {
+//        if (attendanceDTOList.get(i).getActualStartDateTime().getMinutes() > 0
+//                && attendanceDTOList.get(i).getActualStartDateTime().getMinutes() < 10) {
+//          return true;
+//        }
+//      }
+//    }
     return false;
   }
 }

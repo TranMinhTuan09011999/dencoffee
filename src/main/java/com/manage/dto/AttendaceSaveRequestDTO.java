@@ -8,6 +8,6 @@ import java.util.Date;
 public class AttendaceSaveRequestDTO {
   private Long employeeId;
   private Date startDateTime;
-  private Date actualStartDateTime;
   private Date endDateTime;
+  private Long employeeShiftId;
 }

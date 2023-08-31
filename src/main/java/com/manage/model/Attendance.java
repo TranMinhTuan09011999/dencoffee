@@ -28,9 +28,6 @@ public class Attendance extends AbstractEntity implements java.io.Serializable {
   @Column(name = "attendance_id", nullable = false)
   private Long attendanceId;
 
-  @Column(name = "actual_start_date_time")
-  private Date actualStartDateTime;
-
   @Column(name = "start_date_time")
   private Date startDateTime;
 
@@ -40,5 +37,9 @@ public class Attendance extends AbstractEntity implements java.io.Serializable {
   @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinColumn(name = "payroll_id", nullable = false)
   private Payroll payroll;
+
+  @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @JoinColumn(name = "employee_shift_id")
+  private EmployeeShift employeeShift;
 
 }

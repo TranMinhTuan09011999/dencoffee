@@ -42,7 +42,6 @@ public class UpdateAttendanceService {
    try {
      Attendance attendance = attendanceRepository.getOne(attendanceUpdateDTO.getAttendanceId());
      attendance.setStartDateTime(attendanceUpdateDTO.getStartDateTime());
-     attendance.setActualStartDateTime(attendanceUpdateDTO.getActualStartDateTime());
      attendance.setEndDateTime(attendanceUpdateDTO.getEndDateTime());
      attendanceRepository.save(attendance);
      return true;

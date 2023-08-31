@@ -9,6 +9,8 @@ import com.manage.jsonview.AttendanceViews;
 import com.manage.services.bl.GetAttendanceService;
 import com.manage.services.bl.SaveAttendanceService;
 import com.manage.services.bl.UpdateAttendanceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,8 @@ import java.util.List;
 @RequestMapping("/api/user/attendance")
 public class AttendanceForUserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AttendanceForUserController.class);
+
     @Autowired
     private SaveAttendanceService saveAttendanceService;
 
@@ -37,6 +41,7 @@ public class AttendanceForUserController {
     @PostMapping("/save-attendance")
     @PreAuthorize("hasRole('USER') || hasRole('ADMIN')")
     public ResponseEntity<?> saveAttendance(@RequestBody AttendaceSaveRequestDTO attendaceSaveRequestDTO) throws SystemException {
+        logger.debug("Param: ", attendaceSaveRequestDTO.toString());
         Boolean result = saveAttendanceService.saveAttendance(attendaceSaveRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
